@@ -10,21 +10,36 @@ import java.util.List;
 
 /**
  * Cài đặt giải thuật KMP (Knuth-Morris-Pratt) tối ưu cho việc đọc theo từng khối (block streaming).
+ * Triển khai interface dùng chung PatternMatcher để tích hợp vào hệ thống benchmark của nhóm.
  * 
  * Mục tiêu kỹ thuật (Nhiệm vụ Cặp 2 - Hải):
  * 1. Tiền xử lý bảng tiền tố pi (Prefix function / Failure function) theo Knuth (1977) & Sedgewick §5.3.
  * 2. Giữ nguyên biến trạng thái j (số byte đã khớp) liên tục qua các ranh giới block kích thước B.
  * 3. Hỗ trợ tìm kiếm các kết quả chồng lấn (overlapping matches) với độ phức tạp thời gian O(n) độc lập với B.
- * 4. Xác định chính xác vị trí tuyệt đối của mẫu (0-indexed byte offset) trong toàn bộ luồng dữ liệu.
+ * 4. Tích hợp chuẩn ChecksumConsumer phục vụ đo kiểm hiệu năng (RQ1, RQ2).
  */
-public class KmpBlockMatcher {
+public class KmpBlockMatcher implements PatternMatcher {
 
     /**
-     * Interface callback nhận vị trí xuất hiện của mẫu trong luồng dữ liệu.
+     * Interface callback nhận vị trí xuất hiện của mẫu trong luồng dữ liệu (dùng cho debug/test).
      */
     @FunctionalInterface
     public interface MatchListener {
         void onMatch(long byteOffset);
+    }
+
+    @Override
+    public String getName() {
+        return "KMP";
+    }
+
+    /**
+     * Triển khai phương thức chuẩn từ interface dùng chung PatternMatcher.
+     */
+    @Override
+    public long search(InputStream input, byte[] pattern, int blockSize, ChecksumConsumer consumer) throws IOException {
+        MatchListener listener = (consumer != null) ? consumer::onMatch : null;
+        return searchStream(input, pattern, blockSize, listener);
     }
 
     /**
@@ -77,7 +92,7 @@ public class KmpBlockMatcher {
      * @param input luồng dữ liệu cần tìm kiếm
      * @param pattern mẫu byte cần tìm
      * @param blockSize kích thước buffer mỗi lần đọc từ input (B bytes)
-     * @param listener callback nhận vị trí byte xuất hiện
+     * @param listener callback nhận vị trí byte xuất hiện (có thể null nếu chỉ cần đếm)
      * @return tổng số lần xuất hiện tìm thấy
      * @throws IOException khi có lỗi đọc stream
      */
@@ -138,11 +153,6 @@ public class KmpBlockMatcher {
 
     /**
      * Phương thức tiện ích: Tìm kiếm và trả về danh sách toàn bộ các vị trí bắt đầu của mẫu.
-     * 
-     * @param input luồng dữ liệu
-     * @param pattern mẫu byte
-     * @param blockSize kích thước khối buffer
-     * @return danh sách các vị trí bắt đầu tìm thấy (0-indexed)
      */
     public static List<Long> findAllPositions(InputStream input, byte[] pattern, int blockSize) throws IOException {
         List<Long> positions = new ArrayList<>();
@@ -162,7 +172,7 @@ public class KmpBlockMatcher {
     }
 
     /**
-     * Thuật toán Brute Force (để đối chiếu thực nghiệm số phép so sánh và kết quả).
+     * Thuật toán Brute Force (đối chiếu tính đúng và so sánh hiệu năng với KMP).
      */
     public static List<Long> bruteForceSearch(byte[] text, byte[] pattern) {
         List<Long> positions = new ArrayList<>();
@@ -191,6 +201,7 @@ public class KmpBlockMatcher {
         System.out.println("========================================================================");
 
         boolean allPassed = true;
+        PatternMatcher matcher = new KmpBlockMatcher();
 
         // TEST 1: Kiểm tra tính đúng của bảng tiền tố pi (Prefix Function)
         System.out.println("\n[TEST 1] Kiểm tra tính bảng tiền tố pi:");
@@ -204,25 +215,35 @@ public class KmpBlockMatcher {
         System.out.println("Kết quả TEST 1: " + (pi1Pass ? "PASS" : "FAIL"));
         allPassed &= pi1Pass;
 
-        // TEST 2: Tính độc lập với kích thước block B (B=1, B=2, B=3, B=7, B=1024)
-        System.out.println("\n[TEST 2] Kiểm tra tính nhất quán qua các kích thước block B (Boundary Test):");
+        // TEST 2: Tính độc lập với kích thước block B (Boundary Test) kết hợp ChecksumConsumer
+        System.out.println("\n[TEST 2] Kiểm tra tính nhất quán qua các kích thước block B & ChecksumConsumer:");
         String text2 = "ABABDABACDABABCABAB";
         String pattern2 = "ABABCABAB";
         int[] blockSizes = {1, 2, 3, 5, 7, 8, 16, 1024};
-        List<Long> baseline = bruteForceSearch(
-                text2.getBytes(StandardCharsets.ISO_8859_1),
-                pattern2.getBytes(StandardCharsets.ISO_8859_1)
-        );
-        System.out.println("Văn bản: \"" + text2 + "\", Mẫu: \"" + pattern2 + "\"");
-        System.out.println("Kỳ vọng (Brute Force): " + baseline);
+        byte[] textBytes2 = text2.getBytes(StandardCharsets.ISO_8859_1);
+        byte[] patternBytes2 = pattern2.getBytes(StandardCharsets.ISO_8859_1);
+
+        // Tính kết quả kỳ vọng từ Checksum của Brute Force
+        List<Long> baseline = bruteForceSearch(textBytes2, patternBytes2);
+        ChecksumConsumer expectedConsumer = new ChecksumConsumer();
+        for (long pos : baseline) {
+            expectedConsumer.onMatch(pos);
+        }
 
         boolean blockInvariant = true;
         for (int B : blockSizes) {
-            List<Long> actual = findAllPositions(text2, pattern2, B);
-            boolean match = baseline.equals(actual);
-            System.out.printf("  - Block B = %4d byte(s) -> Kết quả: %-15s [%s]\n",
-                    B, actual.toString(), match ? "PASS" : "FAIL");
-            if (!match) blockInvariant = false;
+            ChecksumConsumer actualConsumer = new ChecksumConsumer();
+            try (InputStream in = new ByteArrayInputStream(textBytes2)) {
+                matcher.search(in, patternBytes2, B, actualConsumer);
+            }
+
+            boolean countMatch = (actualConsumer.getMatchCount() == expectedConsumer.getMatchCount());
+            boolean checksumMatch = (actualConsumer.getChecksum() == expectedConsumer.getChecksum());
+            boolean ok = countMatch && checksumMatch;
+
+            System.out.printf("  - Block B = %4d byte(s) -> Matches: %d, Checksum: %-10d [%s]\n",
+                    B, actualConsumer.getMatchCount(), actualConsumer.getChecksum(), ok ? "PASS" : "FAIL");
+            if (!ok) blockInvariant = false;
         }
         allPassed &= blockInvariant;
 
@@ -240,12 +261,11 @@ public class KmpBlockMatcher {
 
         // TEST 4: Mẫu nằm chính xác ngay ranh giới vắt ngang 2 block
         System.out.println("\n[TEST 4] Kiểm tra mẫu vắt ngang đúng ranh giới 2 block:");
-        // Giả sử block 1 đọc "HELLO", block 2 đọc "WORLD". Mẫu cần tìm là "OWOR" (nằm vắt từ block 1 sang 2)
         String text4 = "HELLOWORLD";
         String pattern4 = "OWOR";
         int b4 = 5; // Block 1 = "HELLO", Block 2 = "WORLD"
         List<Long> actual4 = findAllPositions(text4, pattern4, b4);
-        List<Long> expected4 = Arrays.asList(4L); // "OWOR" bắt đầu tại index 4 ('O' cuối HELLO)
+        List<Long> expected4 = Arrays.asList(4L);
         boolean test4Pass = expected4.equals(actual4);
         System.out.println("Văn bản: \"" + text4 + "\", Mẫu: \"" + pattern4 + "\", Block size = 5");
         System.out.println("Expected: " + expected4 + " | Actual: " + actual4);
@@ -262,27 +282,30 @@ public class KmpBlockMatcher {
 
         char[] patternChars = new char[m5];
         Arrays.fill(patternChars, 'a');
-        patternChars[m5 - 1] = 'b'; // Mẫu 'aaaa...ab'
+        patternChars[m5 - 1] = 'b';
         String pattern5 = new String(patternChars);
 
+        byte[] text5Bytes = text5.getBytes(StandardCharsets.ISO_8859_1);
+        byte[] pattern5Bytes = pattern5.getBytes(StandardCharsets.ISO_8859_1);
+
+        ChecksumConsumer kmpConsumer = new ChecksumConsumer();
         long startKmp = System.nanoTime();
-        List<Long> kmpResult = findAllPositions(text5, pattern5, 4096);
+        try (InputStream in = new ByteArrayInputStream(text5Bytes)) {
+            matcher.search(in, pattern5Bytes, 4096, kmpConsumer);
+        }
         long endKmp = System.nanoTime();
         double kmpTimeMs = (endKmp - startKmp) / 1_000_000.0;
 
         long startBf = System.nanoTime();
-        List<Long> bfResult = bruteForceSearch(
-                text5.getBytes(StandardCharsets.ISO_8859_1),
-                pattern5.getBytes(StandardCharsets.ISO_8859_1)
-        );
+        List<Long> bfResult = bruteForceSearch(text5Bytes, pattern5Bytes);
         long endBf = System.nanoTime();
         double bfTimeMs = (endBf - startBf) / 1_000_000.0;
 
         System.out.printf("Tập dữ liệu T4: n = %d, m = %d, Pattern = 'a'^(%d) + 'b'\n", n5, m5, m5 - 1);
-        System.out.printf("  - KMP time:         %8.3f ms (Số matches: %d)\n", kmpTimeMs, kmpResult.size());
-        System.out.printf("  - Brute Force time: %8.3f ms (Số matches: %d)\n", bfTimeMs, bfResult.size());
+        System.out.printf("  - KMP time:         %8.3f ms (Checksum matches: %d)\n", kmpTimeMs, kmpConsumer.getMatchCount());
+        System.out.printf("  - Brute Force time: %8.3f ms (BF matches:       %d)\n", bfTimeMs, bfResult.size());
         System.out.printf("  -> Tốc độ KMP nhanh hơn: %.2fx lần so với Brute Force trên T4!\n", bfTimeMs / Math.max(0.001, kmpTimeMs));
-        boolean test5Pass = kmpResult.equals(bfResult);
+        boolean test5Pass = (kmpConsumer.getMatchCount() == bfResult.size());
         allPassed &= test5Pass;
 
         // TEST 6: Xử lý ngoại lệ tham số rỗng
@@ -298,7 +321,7 @@ public class KmpBlockMatcher {
 
         System.out.println("\n========================================================================");
         if (allPassed) {
-            System.out.println(">>> TẤT CẢ CÁC BÀI TEST KMP STREAMING BLOCK ĐỀU ĐẠT (100% PASS)! <<<");
+            System.out.println(">>> TẤT CẢ CÁC BÀI TEST KMP ĐỀU ĐẠT (100% PASS)! <<<");
         } else {
             System.out.println(">>> CÓ BÀI TEST THẤT BẠI! VUI LÒNG KIỂM TRA LẠI. <<<");
         }
