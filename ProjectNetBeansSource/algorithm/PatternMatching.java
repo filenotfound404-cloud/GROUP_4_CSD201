@@ -1,6 +1,7 @@
 import java.util.List;
 import java.io.InputStream;
 import java.io.IOException;
+package algorithm;
      //Cần 1 khuôn mẫu chung cho các thuật toán tìm kiếm mẫu
      //Phục vụ cho việc đo lường công bằng, độ chính xác cao trên log lớn (16MB - 1GB)
      //Gồm 3 hàm chính và 1 hàm bổ trợ
