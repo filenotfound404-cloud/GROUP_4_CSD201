@@ -1,10 +1,12 @@
+package algorithm;
+
 import java.util.List;
 import java.io.InputStream;
 import java.io.IOException;
-package algorithm;
+
      //Cần 1 khuôn mẫu chung cho các thuật toán tìm kiếm mẫu
      //Phục vụ cho việc đo lường công bằng, độ chính xác cao trên log lớn (16MB - 1GB)
-     //Gồm 3 hàm chính và 1 hàm bổ trợ
+     //Gồm các hàm chính và hàm bổ trợ
       public interface PatternMatching {
       
       //Hàm tiền xử lí mẫu - nhận danh sách các mẫu cần tìm kiếm 
@@ -13,8 +15,11 @@ package algorithm;
       public void compilePattern(List<byte[]> patterns);
 
 
-      //Hàm tìm kiếm mẫu, Nhận dữ liệu log cần quét và trả về danh sách các vị trí tìm thấy mẫu trong log
+      //Hàm tìm kiếm mẫu trên mảng byte
       public void searchPattern(byte[] data, ChecksumConsumer consumer);
+
+      //Hàm tìm kiếm mẫu đọc luồng theo block B (FileInputStream)
+      public void searchStream(InputStream in, int bufferSize, ChecksumConsumer consumer) throws IOException;
 
 
       //Hàm định danh tên thuật toán, trả về tên chuẩn của thuật toán

@@ -11,11 +11,11 @@ public class ChecksumConsumer {
       }
       
       //QUAN TRỌNG: Hàm được gọi mỗi khi tìm thấy 1 mẫu trong log, tính toán checksum và số lượng mẫu tìm được
-      // Chống JIT Compiler xóa code vì phải chạy thuật toán để tính toán giá trị checksum và count
+      //Công thức chuẩn theo Mục 3.3 Đề tài: (vị trí bắt đầu + 1) * 1000003 + mã mẫu, dùng phép cộng long cho phép tràn.
       public void onMatch(long offSet, int patternId) {
-          //offset: Vị trí byte bắt đầu tìm thấy từ trong file log (từ 0 đến n-1).
-          //patternId: Mã số thứ tự của từ vừa tìm thấy (ví dụ: tìm thấy từ thứ 0, từ thứ 1,... trong danh sách mẫu).
-          checksum = checksum * 31 + offSet + patternId;
+          //offSet: Vị trí byte bắt đầu tìm thấy từ trong file log (từ 0 đến n-1).
+          //patternId: Mã số thứ tự của từ vừa tìm thấy. Khi tìm 1 mẫu thì mã mẫu bằng 0.
+          checksum += (offSet + 1) * 1000003L + patternId;
           count++;
       }
 
