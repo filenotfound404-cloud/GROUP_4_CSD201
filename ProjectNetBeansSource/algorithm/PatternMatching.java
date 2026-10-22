@@ -6,6 +6,7 @@ package algorithm;
      //Phục vụ cho việc đo lường công bằng, độ chính xác cao trên log lớn (16MB - 1GB)
      //Gồm 3 hàm chính và 1 hàm bổ trợ
       public interface PatternMatching {
+      
       //Hàm tiền xử lí mẫu - nhận danh sách các mẫu cần tìm kiếm 
       //phân tích mẫu và tạo ra 1 cấu trúc dữ liệu thích hợp để phục vụ cho việc tìm kiếm mẫu 
       //Dùng cho chỉ số build_ms trong file csv

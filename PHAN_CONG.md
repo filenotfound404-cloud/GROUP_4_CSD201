@@ -140,13 +140,12 @@
     2. Kiểm tra tính tương đương (Equivalence Test) giữa 2 biến thể: Chạy đồng thời `ACFailMatcher` và `ACDFAMatcher` trên tập $k \in \{1, 10, 20\}$ mẫu, đối chiếu `count:check` phải trùng khớp 100%.
     3. Kiểm tra duy trì trạng thái Automaton (con trỏ node / chỉ số state) không bị reset khi chuyển tiếp qua ranh giới block $B = 1, 2, 3, 7\text{ bytes}$.
   * *Đầu ra:* File `test/AhoCorasickTest.java`.
-* **Đầu việc 6.3: Xây dựng Bảng ánh xạ cơ chế vào mã nguồn (Bắt buộc theo Mục 7.4 Bảng 5)**
+* **Đầu việc 6.3: Viết giải thích bằng bảng ánh xạ cơ chế (Bắt buộc theo Mục 7.4 Bảng 5)**
   * *Mô tả:* Lập bảng ánh xạ chi tiết chỉ rõ từng cơ chế cốt lõi của Aho-Corasick (Trie, BFS, Failure Link, Dictionary Suffix Link, DFA Table) tương ứng với tên file, tên hàm nào trong code của nhóm.
   * *Đầu ra:* Bảng ánh xạ chèn vào mục **III. Methods** của Paper.
 * **Đầu việc 6.4: Quản lý và hoàn thiện bản thảo Paper IEEE Word**
   * Cập nhật file `paper/Group4_Paper.docx`: Hoàn thiện mục **II. Background and Related Work** và mục **III. Methods** (kèm mã giả và Bảng ánh xạ).
-* **Đầu việc 6.5: Review chéo**
-  * Kiểm tra chéo (Review) code Brute Force và bộ đo Runner của Cặp 1.
+
 
 ---
 
