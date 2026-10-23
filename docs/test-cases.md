@@ -1,10 +1,16 @@
+<<<<<<< HEAD
 # Danh sách kiểm thử k-KMP
+=======
+
+# Danh sách kiểm thử k-KMP và Bộ Test Chung cho cả Nhóm
+>>>>>>> 735a892067cf49ce3e5279d62203003da4bef543
 
 Quy ước: vị trí là **vị trí bắt đầu** tính từ 0. Mã mẫu `id` là thứ tự mẫu trong danh sách (0, 1, 2, …); khi chỉ có một mẫu thì `id = 0`.
 Mỗi lần khớp: `count += 1` và `check += (vị trí + 1) × 1000003 + id` (cộng `long`, cho phép tràn).
 
 ## 1. Các trường hợp kiểm thử cố định
 
+<<<<<<< HEAD
 ### 1.1. Ca bắt buộc của đề
 
 | ID | Văn bản | Mẫu | Kết quả mong đợi | count | check |
@@ -29,6 +35,15 @@ Mỗi lần khớp: `count += 1` và `check += (vị trí + 1) × 1000003 + id` 
 | TC13 | bất kỳ | bất kỳ, block size ≤ 0 | Báo lỗi (`IllegalArgumentException`) | — | — |
 
 Giá trị `count` và `check` ở trên được tính theo đúng công thức của đề. Chương trình kiểm thử so kết quả của `kmp-k` với danh sách vị trí mong đợi của từng ca, và đồng thời so với oracle.
+=======
+| ID | Văn bản | Mẫu | Kết quả mong đợi |
+|---|---|---|---|
+| TC01 | aaaaa | aaa | Vị trí 0, 1, 2 |
+| TC02 | abababab | abab | Vị trí 0, 2, 4 |
+| TC03 | abc | abcd | Không tìm thấy |
+| TC04 | abc | Mẫu rỗng | Báo lỗi `IllegalArgumentException` |
+| TC05 | ushers | he, she, his, hers | she tại 1, he tại 2, hers tại 2 |
+>>>>>>> 735a892067cf49ce3e5279d62203003da4bef543
 
 ## 2. Kiểm thử ranh giới block
 
@@ -42,7 +57,7 @@ Giá trị `count` và `check` ở trên được tính theo đúng công thức
 
 `count` và `check` phải **giống nhau ở mọi kích thước block**. Với test ngẫu nhiên, các giá trị B được luân phiên theo thứ tự cặp để mọi B đều được thử.
 
-## 3. Kiểm thử ngẫu nhiên
+## 3. Kiểm thử ngẫu nhiên (Randomized Stress Test)
 
 ### 3.1. Một mẫu
 
@@ -84,7 +99,30 @@ Lượt nào `count` hoặc `check` khác oracle thì ghi `status = wrong`.
 - `count` và `check` **đều** khớp bộ tham chiếu (oracle) và danh sách vị trí mong đợi của ca cố định.
 - Không bỏ sót các lần xuất hiện chồng lấn.
 - Vị trí bắt đầu được tính từ 0.
+<<<<<<< HEAD
 - Kết quả không thay đổi theo kích thước block (B = 1, 2, 3, 7, 1 MiB).
 - Mẫu rỗng và block size ≤ 0 báo lỗi.
 - Lượt `--count` cho cùng kết quả với lượt đo thời gian.
 - Toàn bộ test chạy xong với mã thoát 0 (chương trình in `TAT CA TEST DEU QUA`).
+=======
+- Kết quả không thay đổi theo kích thước block.
+- Kết quả khớp với bộ tham chiếu.
+
+## 5. Hướng dẫn chạy kiểm thử tự động (Automated Test Execution)
+
+Toàn bộ các tiêu chí trên đã được mã hóa thành các lớp kiểm thử tự động:
+
+1. **Bộ TestCase chung cho cả nhóm (`CommonTestSuite`):**
+   ```powershell
+   java -cp "build/classes" kkmp.experiment.CommonTestSuite
+   # Hoặc chạy từ src:
+   java -cp "src" kkmp.experiment.CommonTestSuite
+   ```
+   *Kết quả:* Thực thi toàn bộ TC01 - TC05, kiểm thử ranh giới block $B \in \{1, 2, 3, 7, 1\text{ MiB}\}$, và 10.000 ca ngẫu nhiên đối chiếu Oracle `String.indexOf` (100% PASS).
+
+2. **Bộ TestCase riêng cho thuật toán KMP (`KmpDedicatedTestSuite`):**
+   ```powershell
+   java -cp "src" kkmp.experiment.KmpDedicatedTestSuite
+   ```
+   *Kết quả:* Thực thi 19 bài kiểm thử chuyên sâu về bảng $\pi$, ranh giới cắt mẫu, chuỗi Fibonacci, chuỗi tuần hoàn, tập dữ liệu bất lợi $T_4$ (100% PASS).
+>>>>>>> 735a892067cf49ce3e5279d62203003da4bef543
