@@ -2,14 +2,12 @@
 setlocal
 
 set "SOURCE_ROOT=%~dp0"
-set "OUTPUT_DIR=%TEMP%\GROUP_4_CSD201_CommonTests"
+set "OUTPUT_DIR=%TEMP%\GROUP_4_CSD201_KKMP_CommonTests"
 
 if not exist "%OUTPUT_DIR%" mkdir "%OUTPUT_DIR%"
 
 javac -encoding UTF-8 -d "%OUTPUT_DIR%" ^
-  "%SOURCE_ROOT%algorithm\PatternMatching.java" ^
-  "%SOURCE_ROOT%algorithm\ChecksumConsumer.java" ^
-  "%SOURCE_ROOT%algorithm\CommonTestSuite.java"
+  "%SOURCE_ROOT%CommonTestSuite.java"
 
 if errorlevel 1 (
   echo.
@@ -18,6 +16,6 @@ if errorlevel 1 (
   exit /b 1
 )
 
-java -cp "%OUTPUT_DIR%" algorithm.CommonTestSuite
+java -cp "%OUTPUT_DIR%" CommonTestSuite
 pause
 endlocal
