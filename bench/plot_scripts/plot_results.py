@@ -19,6 +19,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+# Đảm bảo in tiếng Việt trên console Windows không bị lỗi charmap
+if sys.stdout.encoding != 'utf-8':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+        sys.stderr.reconfigure(encoding='utf-8')
+    except AttributeError:
+        pass
+
 # Thiết lập phong cách hiển thị đồ thị đẹp, chuyên nghiệp cho bài báo IEEE
 plt.rcParams['font.sans-serif'] = 'DejaVu Sans'
 plt.rcParams['axes.edgecolor'] = '#333333'
