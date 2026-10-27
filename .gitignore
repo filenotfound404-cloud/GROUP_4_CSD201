@@ -1,7 +1,12 @@
-/kkmp-experiment/nbproject/private/
-/kkmp-experiment/build/
+# NetBeans & IDE Build Artefacts
+build/
+dist/
+nbproject/private/
+.vscode/
+.idea/
 *.class
-ProjectNetBeansSource/build/
-ProjectNetBeansSource/dist/
-ProjectNetBeansSource/out/
-ProjectNetBeansSource/nbproject/private/
+
+# Temporary & OS files
+*.log
+.DS_Store
+Thumbs.db
