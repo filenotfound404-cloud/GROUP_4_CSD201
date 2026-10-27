@@ -2,17 +2,20 @@ package algorithm.kmp;
 
 import algorithm.ChecksumConsumer;
 import algorithm.PatternMatching;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * KMPMatcher - Giải thuật KMP (Knuth-Morris-Pratt) khớp mẫu đơn đọc theo block.
- * Lấy từ module của Cặp 2 (kkmp-experiment/KmpBlockMatcher.java).
+ * KMPMatcher - Giải thuật KMP (Knuth-Morris-Pratt).
+ * Tuân thủ interface PatternMatching:
+ * - Khi có 1 pattern: chạy KMP đơn mẫu.
+ * - Khi có nhiều pattern: lặp qua từng pattern (hoặc khớp từng pattern với patternId tương ứng).
  */
 public class KMPMatcher implements PatternMatching {
 
-    private byte[] pattern;
-    private int[] pi;
-    private int matched = 0;
+    private List<byte[]> patterns;
+    private List<int[]> piTables;
+    private int[] matchedStates;
     private long globalOffset = 0;
     private long comparisonsCount = 0;
 
@@ -45,42 +48,53 @@ public class KMPMatcher implements PatternMatching {
         if (patterns == null || patterns.isEmpty()) {
             throw new IllegalArgumentException("Pattern list cannot be empty");
         }
-        byte[] p = patterns.get(0);
-        if (p == null || p.length == 0) {
-            throw new IllegalArgumentException("Pattern cannot be empty");
+        this.patterns = new ArrayList<>(patterns.size());
+        this.piTables = new ArrayList<>(patterns.size());
+        for (byte[] p : patterns) {
+            if (p == null || p.length == 0) {
+                throw new IllegalArgumentException("Pattern cannot be empty");
+            }
+            this.patterns.add(p);
+            this.piTables.add(computePrefixTable(p));
         }
-        this.pattern = p;
-        this.pi = computePrefixTable(p);
         reset();
     }
 
     @Override
     public void searchPattern(byte[] data, ChecksumConsumer consumer) {
-        if (data == null || data.length == 0 || pattern == null || pi == null) {
+        if (data == null || data.length == 0 || patterns == null || patterns.isEmpty()) {
             return;
         }
 
-        int m = pattern.length;
-        for (int i = 0; i < data.length; i++) {
-            byte b = data[i];
+        int numPatterns = patterns.size();
+        for (int pIdx = 0; pIdx < numPatterns; pIdx++) {
+            byte[] pattern = patterns.get(pIdx);
+            int[] pi = piTables.get(pIdx);
+            int m = pattern.length;
+            int matched = matchedStates[pIdx];
 
-            while (matched > 0 && b != pattern[matched]) {
-                comparisonsCount++;
-                matched = pi[matched - 1];
-            }
+            for (int i = 0; i < data.length; i++) {
+                byte b = data[i];
 
-            comparisonsCount++;
-            if (b == pattern[matched]) {
-                matched++;
-            }
-
-            if (matched == m) {
-                long matchOffset = (globalOffset + i) - m + 1;
-                if (consumer != null) {
-                    consumer.onMatch(0, matchOffset);
+                while (matched > 0 && b != pattern[matched]) {
+                    comparisonsCount++;
+                    matched = pi[matched - 1];
                 }
-                matched = pi[m - 1];
+
+                comparisonsCount++;
+                if (b == pattern[matched]) {
+                    matched++;
+                }
+
+                if (matched == m) {
+                    long matchOffset = (globalOffset + i) - m + 1;
+                    if (consumer != null) {
+                        consumer.onMatch(matchOffset, pIdx);
+                    }
+                    matched = pi[m - 1];
+                }
             }
+            matchedStates[pIdx] = matched;
         }
         globalOffset += data.length;
     }
@@ -92,7 +106,9 @@ public class KMPMatcher implements PatternMatching {
 
     @Override
     public void reset() {
-        this.matched = 0;
+        if (patterns != null) {
+            this.matchedStates = new int[patterns.size()];
+        }
         this.globalOffset = 0;
         this.comparisonsCount = 0;
     }
