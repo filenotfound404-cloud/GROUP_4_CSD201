@@ -22,7 +22,27 @@ import java.util.concurrent.TimeUnit;
  */
 public class BenchmarkRunner {
 
-    private static final String CSV_PATH = "results/raw/benchmark_results.csv";
+    private static final String CSV_PATH = resolveCsvPath();
+
+    /**
+     * Tự động dò tìm thư mục results/raw/ tại thư mục gốc repository (GROUP_4_CSD201 hoặc CSD201)
+     * Đảm bảo dù đứng ở bất kỳ thư mục con nào (ProjectNetBeans, dist,...) file CSV vẫn được ghi đúng chỗ.
+     */
+    private static String resolveCsvPath() {
+        File current = new File(".").getAbsoluteFile();
+        while (current != null) {
+            File resultsDir = new File(current, "results" + File.separator + "raw");
+            File gitDir = new File(current, ".git");
+            if (gitDir.exists() || resultsDir.exists()) {
+                if (!resultsDir.exists()) {
+                    resultsDir.mkdirs();
+                }
+                return new File(resultsDir, "benchmark_results.csv").getAbsolutePath();
+            }
+            current = current.getParentFile();
+        }
+        return "results" + File.separator + "raw" + File.separator + "benchmark_results.csv";
+    }
     private static final int TIMEOUT_SECONDS = 60;
     private static final String XMX = "2g"; // Dùng -Xmx2g theo quy định Mục 6.1
 
