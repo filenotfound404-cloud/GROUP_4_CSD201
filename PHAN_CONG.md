@@ -161,3 +161,201 @@
 
 ---
 
+
+
+## V. BẢNG PHÂN CÔNG CHI TIẾT GIAI ĐOẠN D7–D14 (THỰC NGHIỆM, PAPER IEEE & BẢO VỆ)
+**Mục tiêu giai đoạn D7–D14:** Hoàn thành kiểm tra tiến độ D7, chạy toàn bộ ma trận đo đạc 3 RQ (D8–D10), xuất biểu đồ trực quan hóa, hoàn thiện Paper IEEE 7 phần và chuẩn bị sẵn sàng cho buổi vấn đáp bảo vệ cá nhân 1-1 (D14).
+
+---
+
+### 🔵 CẶP 1: THỰC NGHIỆM RQ1 (BRUTE FORCE VS KMP), GIÁM SÁT BỘ NHỚ & PHÂN TÍCH HIỆU NĂNG
+
+#### 1. Đinh Vũ Phương Khánh (Nhóm trưởng & Phụ trách RQ1)
+* **Đầu việc 1.5: Chuẩn bị và chủ trì buổi kiểm tra tiến độ D7**
+  * *Mô tả:* Chuẩn bị slide/tài liệu 1 trang tóm tắt 3 RQ, giả thuyết và kiến trúc hệ thống; chạy demo kiểm tra tính đúng và chạy mẫu cấu hình nhỏ 16 MiB để xuất CSV trước Giảng viên trong 10 phút.
+  * *Đầu ra:* Biên bản/Xác nhận đạt kiểm tra tiến độ ngày D7.
+* **Đầu việc 1.6: Chủ trì chạy thực nghiệm đo đạc RQ1 (D8 – D10)**
+  * *Mô tả:* Đo đạc so sánh Brute Force và KMP trên 5 mức kích thước văn bản: $S \in \{16, 64, 256, 512, 1024\text{ MiB}\}$ trên cả tập log mô phỏng $T_1$ và tập ngẫu nhiên $T_3$ ($\sigma = 4$), lặp 3 seed ngẫu nhiên.
+  * *Yêu cầu kỹ thuật:* Giữ cố định độ dài mẫu $m = 16\text{ bytes}$. Đo ở trạng thái cache nóng (warm cache) theo đúng giao thức. Đảm bảo `status == OK` và giá trị `output_check` giữa Brute Force và KMP trùng khớp 100%.
+  * *Đầu ra:* Tập dữ liệu CSV chuẩn cho RQ1 trong thư mục `results/`.
+* **Đầu việc 1.7: Soạn thảo Paper IEEE - Mục RQ1 & Tổng kết**
+  * *Mô tả:* Viết phần phân tích dữ liệu RQ1 trong mục **V. Results**: giải thích cơ chế vì sao Brute Force có throughput xấp xỉ hoặc cao hơn KMP trên $T_1$ do tỉ lệ mismatch xảy ra ngay byte đầu tiên rất cao. Phối hợp viết mục **VII. Conclusion**.
+  * *Đầu ra:* Các mục văn bản tương ứng chèn vào file `paper/Group4_Paper.docx`.
+* **Đầu việc 1.8: Chuẩn bị bảo vệ cá nhân & Điều phối bảo vệ nhóm (D14)**
+  * *Mô tả:* Soạn kịch bản trình bày nhóm 5 phút (câu hỏi chung, kết quả chính 3 RQ, 1 kết quả trái dự đoán); ôn luyện truy vết Brute Force và KMP trên chuỗi ngắn cho phần thi cá nhân 5 phút.
+
+#### 2. Hà Văn Sang (Phụ trách Sinh dữ liệu quy mô lớn & Hệ số đọc nền)
+* **Đầu việc 2.5: Sinh và kiểm soát dữ liệu log quy mô lớn (D7 – D8)**
+  * *Mô tả:* Vận hành các bộ sinh dữ liệu (`LogGenerator`, `RandomByteGenerator`, `WorstCaseGenerator`) để tạo các file thực nghiệm $S$ lên đến $1\text{ GiB}$; tính toán và lưu mã băm SHA-256 cho từng file.
+  * *Đầu ra:* Toàn bộ dữ liệu thực nghiệm sẵn sàng cùng tài liệu cập nhật `data/README.md`.
+* **Đầu việc 2.6: Đo đạc mốc tham chiếu đọc file nền `lib-read` & Giám sát tài nguyên (D8 – D10)**
+  * *Mô tả:* Thực hiện đo `lib-read` trên tất cả các kích thước file để xác định trần I/O của phần cứng; theo dõi `heap_peak_bytes` và kiểm soát hiện tượng nghẽn I/O hay Garbage Collection.
+  * *Đầu ra:* Các dòng log `lib-read` trong file CSV kết quả.
+* **Đầu việc 2.7: Soạn thảo Paper IEEE - Mục Thiết lập thực nghiệm (IV. Experimental Setup)**
+  * *Mô tả:* Mô tả chi tiết thông số môi trường thử nghiệm: thông số CPU, RAM, OS (Windows), phiên bản JDK 1.8, NetBeans 17, JVM parameter (`-Xmx2g`), block size $B = 1\text{ MiB}$, chiến lược JIT warm-up 3 lần.
+  * *Đầu ra:* Toàn bộ nội dung mục **IV. Experimental Setup** trong Paper Word.
+* **Đầu việc 2.8: Thực hiện phản biện chéo (Cross-Review) Cặp 2 & Chuẩn bị vấn đáp cá nhân**
+  * *Mô tả:* Kiểm tra chéo toàn bộ dữ liệu thực nghiệm RQ2 của Cặp 2; luyện tập thao tác sửa code trực tiếp trong 2 phút trên IDE theo yêu cầu vấn đáp D14.
+
+---
+
+### 🟢 CẶP 2: THỰC NGHIỆM RQ2 (ĐIỀU KIỆN ĐỔI CHIỀU & DỮ LIỆU BẤT LỢI), KIỂM SOÁT TÍNH ĐÚNG
+
+#### 3. Nguyễn Đặng Trường Hải (Phụ trách Thực nghiệm RQ2 & Phân tích số phép tính)
+* **Đầu việc 3.4: Chủ trì chạy thực nghiệm đo đạc RQ2 (D8 – D10)**
+  * *Mô tả:* 
+    * **Thí nghiệm A:** Giữ cố định $S = 256\text{ MiB}$, mẫu $m = 64\text{ bytes}$, thay đổi kích thước bảng chữ cái $\sigma \in \{2, 4, 26, 256\}$ trên tập $T_3$ để tìm điểm giao thoa hiệu năng giữa Brute Force và KMP.
+    * **Thí nghiệm B:** Giữ $S = 256\text{ MiB}$, chạy trên tập dữ liệu bất lợi $T_4$ ('aaaa...b') với độ dài mẫu thay đổi $m \in \{8, 64, 1024\}$.
+  * *Yêu cầu kỹ thuật:* Đảm bảo KMP chứng minh được độ phức tạp $O(n)$ trong khi Brute Force thoái hóa về $O(n \times m)$ trên $T_4$.
+  * *Đầu ra:* Tập dữ liệu CSV chuẩn cho RQ2 trong thư mục `results/`.
+* **Đầu việc 3.5: Đo đạc chỉ số số phép so sánh byte (`--count`)**
+  * *Mô tả:* Thu thập và phân tích chỉ số số phép so sánh byte trên mỗi byte văn bản cho cả hai thuật toán trên từng mức $\sigma$ và $m$.
+  * *Đầu ra:* Bảng số liệu thống kê tỷ lệ so sánh byte đưa vào báo cáo.
+* **Đầu việc 3.6: Soạn thảo Paper IEEE - Mục RQ2**
+  * *Mô tả:* Viết phần phân tích thực nghiệm RQ2 trong mục **V. Results**: luận giải tác động của việc thu hẹp bảng chữ cái $\sigma$ làm tăng số tiền tố trùng lặp, khiến Brute Force quay lui nhiều và KMP bắt đầu vượt trội.
+  * *Đầu ra:* Bản thảo mục **V. Results (Subsection RQ2)** trong Paper Word.
+* **Đầu việc 3.7: Chuẩn bị vấn đáp cá nhân (D14)**
+  * *Mô tả:* Nắm vững quy trình tính bảng tiền tố $\pi$, vẽ đồ thị bước nhảy KMP trên giấy nháp để trả lời giảng viên; sẵn sàng thực hiện sửa đổi logic bước nhảy KMP trong 2 phút.
+
+#### 4. Nguyễn Hoài Nhi (Phụ trách Kiểm soát tính đúng & Thẩm định độ tin cậy)
+* **Đầu việc 4.4: Đảm bảo bộ test tính đúng cho kiểm tra tiến độ D7**
+  * *Mô tả:* Đóng gói và chạy toàn bộ các test suite (`FixedCasesTest`, `KMPTest`, `RandomOracleTest`, `BlockBoundaryTest`) trong buổi kiểm tra D7, đảm bảo 100% test pass màu xanh.
+  * *Đầu ra:* Báo cáo kết quả kiểm thử tính đúng nộp tại D7.
+* **Đầu việc 4.5: Rà soát và lọc ngoại lai dữ liệu CSV (D8 – D10)**
+  * *Mô tả:* Kiểm tra tính hợp lệ của toàn bộ các dòng kết quả CSV RQ2: đối chiếu `output_check`, phát hiện các lần đo bị biến thiên lớn do GC spike để tiến hành đo lại.
+  * *Đầu ra:* Bộ số liệu CSV sạch, có độ tin cậy cao và tính tái lập tốt.
+* **Đầu việc 4.6: Soạn thảo Paper IEEE - Mục Các đe dọa đến độ tin cậy (VI. Threats to Validity)**
+  * *Mô tả:* Viết mục **VI. Threats to Validity**: phân tích các yếu tố nội tại và ngoại cảnh ảnh hưởng đến kết quả (cơ chế cache ổ đĩa của OS, Garbage Collection của JVM, độ chính xác của bộ đo `System.nanoTime()`, ranh giới đọc block).
+  * *Đầu ra:* Toàn bộ nội dung mục **VI. Threats to Validity** trong Paper Word.
+* **Đầu việc 4.7: Thực hiện phản biện chéo (Cross-Review) Cặp 3 & Chuẩn bị vấn đáp cá nhân**
+  * *Mô tả:* Kiểm tra chéo cấu trúc cây Trie, mảng chuyển trạng thái DFA của Cặp 3; luyện tập trả lời câu hỏi dự đoán kết quả khi tham số $m, \sigma$ thay đổi.
+
+---
+
+### 🟣 CẶP 3: THỰC NGHIỆM RQ3 (AHO-CORASICK VS K-KMP), ĐỒ THỊ PYTHON & CHỦ BIÊN PAPER IEEE
+
+#### 5. Lương Triều Vỹ (Phụ trách Thực nghiệm RQ3 & Trực quan hóa dữ liệu)
+* **Đầu việc 5.5: Chủ trì chạy thực nghiệm đo đạc RQ3 (D8 – D10)**
+  * *Mô tả:* Đo đạc so sánh $k$-KMP vs Aho-Corasick biến thể `fail` vs Aho-Corasick biến thể `dfa` khi số lượng mẫu $k \in \{1, 10, 100, 1000\}$ trên file log $T_1$ quy mô $256\text{ MiB}$ (và cấu hình tối đa $1024\text{ MiB}$).
+  * *Yêu cầu kỹ thuật:* Ghi nhận đầy đủ 3 thông số: thời gian dựng (`build_ms`), throughput quét (`throughput_mibs`), và đỉnh RAM chiếm dụng (`heap_peak_bytes`).
+  * *Đầu ra:* Tập dữ liệu CSV chuẩn cho RQ3 trong thư mục `results/`.
+* **Đầu việc 5.6: Trực quan hóa dữ liệu bằng script Python (D11 – D12)**
+  * *Mô tả:* Hoàn thiện và chạy script `bench/plot_scripts/plot_results.py` trên file CSV để tự động sinh ra 5 biểu đồ khoa học đạt chuẩn IEEE:
+    * *Biểu đồ 1 (RQ1):* Throughput (MiB/s) theo kích thước văn bản $S$.
+    * *Biểu đồ 2 (RQ2A):* Throughput theo kích thước bảng chữ cái $\sigma$.
+    * *Biểu đồ 3 (RQ2B):* Thời gian thực thi trên tập dữ liệu bất lợi $T_4$ theo độ dài mẫu $m$.
+    * *Biểu đồ 4 (RQ3):* Thời gian quét (Scan Time) khi số lượng mẫu $k$ tăng từ 1 đến 1.000.
+    * *Biểu đồ 5 (RQ3 - Cơ chế tắt/bật):* So sánh đánh đổi thời gian dựng (`build_ms`) và bộ nhớ phụ trội giữa `AC-DFA` và `AC-Fail`.
+  * *Đầu ra:* 5 file hình chất lượng cao đặt trong thư mục `paper/figures/`.
+* **Đầu việc 5.7: Soạn thảo Paper IEEE - Mục RQ3 & Thảo luận**
+  * *Mô tả:* Viết phần phân tích RQ3 trong mục **V. Results**: luận giải sự đánh đổi giữa tốc độ $O(1)$ của DFA với chi phí bộ nhớ ma trận $O(\text{states} \times 256)$, và lợi thế của Aho-Corasick so với $k$-KMP khi $k \ge 10$.
+  * *Đầu ra:* Nội dung mục RQ3 gửi cho Bảo Trâm tích hợp vào Paper.
+
+#### 6. Nguyễn Bảo Trâm (Chủ biên Paper IEEE & Trưởng ban Biên tập)
+* **Đầu việc 6.5: Tổng hợp và hoàn thiện toàn diện Paper IEEE 7 phần (D11 – D12)**
+  * *Mô tả:* Tiếp nhận số liệu và đồ thị từ các cặp để tích hợp vào `paper/Group4_Paper.docx`. Trực tiếp viết và biên tập:
+    * **Title, Abstract & Keywords (Tiếng Anh chuyên ngành):** Tóm tắt gọn gàng bài toán, phương pháp, kết quả số liệu cốt lõi và đóng góp chính.
+    * **I. Introduction:** Nêu rõ bài toán quét log lớn trong thực tế, các giới hạn của thuật toán đơn mẫu và sự cần thiết của automata đa mẫu.
+    * **VII. Discussion:** Thảo luận sâu các phát hiện bất ngờ (Brute Force thắng KMP trên log tự nhiên), quy tắc chọn thuật toán dựa trên thực tế.
+    * **Tài liệu tham khảo (References):** Chuẩn hóa đúng định dạng trích dẫn IEEE cho 4 tài liệu bắt buộc ([1] Knuth 1977, [2] Aho 1975, [3] Sedgewick 2011, [4] Loghub 2023).
+    * **Khai báo sử dụng AI (AI Declaration):** Viết tuyên bố minh bạch về các tác vụ có sử dụng AI (debug, viết test, hỗ trợ vẽ script) theo quy định của môn học.
+  * *Đầu ra:* Bản thảo Paper hoàn chỉnh đúng format IEEE 2 cột, không vượt quá giới hạn trang.
+* **Đầu việc 6.6: Rà soát chất lượng & Kiểm tra trích dẫn chéo (D13)**
+  * *Mô tả:* Chủ trì rà soát toàn bộ bài báo: kiểm tra độ khớp giữa số liệu bảng biểu, đồ thị với file CSV gốc; kiểm tra định dạng hình ảnh và bảng biểu theo quy chuẩn IEEE.
+* **Đầu việc 6.7: Đóng gói sản phẩm nộp & Chuẩn bị kịch bản bảo vệ (D13 – D14)**
+  * *Mô tả:* Cùng Leader kiểm tra gói nộp cuối cùng (mã nguồn, file CSV gốc, script Python, Paper file Word và PDF); phân công kịch bản phản biện chéo và hỗ trợ đồng đội trong phần bảo vệ cá nhân.
+
+---
+
+## VI. TIẾN ĐỘ THỰC HIỆN GIAI ĐOẠN CUỐI (D7 $\to$ D14)
+
+| Mốc thời gian | Cặp 1 (Hạ tầng & RQ1) | Cặp 2 (KMP & RQ2) | Cặp 3 (Aho-Corasick & Paper) | Mục tiêu kiểm soát |
+| :---: | :--- | :--- | :--- | :--- |
+| **Ngày D7** | - Trình bày tiến độ trên lớp (10p)<br>- Demo chạy Runner cấu hình 16 MiB ra CSV | - Chạy toàn bộ test suite tính đúng trước GV (100% PASS)<br>- Trình bày kế hoạch test | - Chuẩn bị tài liệu 1 trang (3 RQ, giả thuyết, interface)<br>- Trình bày thiết kế Aho-Corasick | **Đạt xác nhận tiến độ D7 từ Giảng viên** |
+| **Ngày D8** | - Sinh toàn bộ dữ liệu lớn $T_1, T_3, T_4$ ($S \le 1\text{ GiB}$)<br>- Ghi nhận SHA-256 vào `data/README.md` | - Thiết lập kịch bản đo Thí nghiệm A RQ2 ($\sigma \in \{2, 4, 26, 256\}$)<br>- Kiểm tra tính đúng với $m = 64$ | - Sinh tập $k \in \{1, 10, 100, 1000\}$ mẫu cho RQ3 (50% log, 50% random)<br>- Kiểm tra bộ nhớ Trie | Sẵn sàng toàn bộ dữ liệu và mẫu cho benchmark |
+| **Ngày D9** | - Chạy toàn bộ cấu hình thực nghiệm RQ1 (5 mức kích thước, 3 seed)<br>- Chạy đối chiếu `lib-read` | - Chạy toàn bộ Thí nghiệm A và Thí nghiệm B ($T_4$) của RQ2<br>- Đo số phép so sánh byte | - Chạy benchmark RQ3: so sánh $k$-KMP, `AC-Fail`, `AC-DFA` trên $T_1$ 256 MiB và 1 GiB | Thu thập đủ 100% dữ liệu thô vào các file CSV |
+| **Ngày D10** | - Kiểm tra tính nhất quán CSV RQ1 (`output_check`, warm cache)<br>- Lọc dữ liệu ngoại lai | - Rà soát dữ liệu CSV RQ2<br>- Lập bảng số liệu tỷ lệ so sánh byte | - Rà soát CSV RQ3, kiểm tra đánh đổi bộ nhớ và build time<br>- Chuẩn bị dữ liệu cho script vẽ hình | Khóa dữ liệu CSV, đảm bảo tính tái lập 100% |
+| **Ngày D11** | - Viết mục **V. Results (RQ1)**<br>- Viết mục **IV. Experimental Setup** | - Viết mục **V. Results (RQ2)**<br>- Viết mục **VI. Threats to Validity** | - Chạy script Python xuất 5 biểu đồ IEEE<br>- Viết mục **V. Results (RQ3)** | Hoàn thành toàn bộ số liệu và đồ thị trực quan |
+| **Ngày D12** | - Cùng Cặp 3 hoàn thiện phần phân tích và kết luận Paper<br>- Rà soát mã nguồn | - Hỗ trợ Cặp 3 rà soát bảng số liệu trong Paper<br>- Ôn luyện truy vết thuật toán KMP | - Tổng hợp toàn bộ bài báo IEEE Word (`paper/Group4_Paper.docx`)<br>- Viết Abstract, Intro, Discussion, Conclusion, AI Declaration | Bản thảo Paper IEEE đầy đủ 7 mục |
+| **Ngày D13** | - Thực hiện Cross-Review code Cặp 2<br>- Chạy lại toàn bộ test trên bản build cuối | - Thực hiện Cross-Review code Cặp 3<br>- Luyện tập thao tác sửa code 2 phút | - Thực hiện Cross-Review code Cặp 1<br>- Rà soát chuẩn trích dẫn IEEE và format 2 cột<br>- Đóng gói sản phẩm nộp | Sản phẩm nộp hoàn chỉnh, sẵn sàng bảo vệ |
+| **Ngày D14** | **BẢO VỆ ĐỒ ÁN:**<br>- Thuyết trình nhóm 5 phút<br>- Vấn đáp cá nhân 1-1 (5 phút) | **BẢO VỆ ĐỒ ÁN:**<br>- Trực tiếp thực hiện chạy lại cấu hình GV chỉ định (3 phút)<br>- Vấn đáp cá nhân 1-1 (5 phút) | **BẢO VỆ ĐỒ ÁN:**<br>- Phản biện kết quả đồ thị và bảng số liệu<br>- Vấn đáp cá nhân 1-1 (5 phút) | **Hoàn thành bảo vệ đồ án CSD201** |
+
+---
+
+## VII. GIẢI THÍCH CHI TIẾT Ý NGHĨA KỸ THUẬT, BẢN CHẤT DỮ LIỆU & BÍ QUYẾT BẢO VỆ CHO TỪNG CẶP
+
+Dưới đây là cẩm nang phân tích chuyên sâu cho từng cặp nhằm phục vụ trực tiếp cho việc viết Paper IEEE (Discussion, Threats to Validity) và trả lời vấn đáp cá nhân 1-1 (4.0 điểm):
+
+---
+
+### 1. CẶP 1: BẢN CHẤT KỸ THUẬT RQ1, MỐC THAM CHIẾU LIB-READ & HIỆN TƯỢNG ĐẢO CHIỀU
+
+* **Câu hỏi cốt lõi của RQ1:** Khi dung lượng log tăng từ $16\text{ MiB}$ đến $1.024\text{ MiB}$ ($1\text{ GiB}$), Brute Force hay KMP nhanh hơn về mặt thời gian thực tế (`elapsed_ms`) và Throughput (`throughput_mibs`)?
+* **Bản chất khoa học của hiện tượng Brute Force $\approx$ KMP trên log tự nhiên ($T_1$):**
+  * *Tại sao lý thuyết nói KMP $O(n)$ tốt hơn Brute Force $O(n \times m)$ nhưng thực tế Brute Force lại chạy nhanh tương đương hoặc hơn?*
+  * Trong các file log thực tế ($T_1$), bảng chữ cái ASCII phân bố rộng và đa dạng. Hơn 95% các vị trí so khớp bị sai (mismatch) ngay từ byte đầu tiên hoặc byte thứ hai ($j = 0$ hoặc $j = 1$). Do đó, Brute Force chỉ tốn 1 đến 2 phép so sánh là trượt tiếp sang vị trí kế tiếp, độ phức tạp thực nghiệm thực tế gần như là $O(n)$.
+  * Ngược lại, KMP tuy không quay lui con trỏ văn bản nhưng lại tốn thêm chi phí overhead để quản lý biến trạng thái `j = pi[j - 1]`, tra mảng $\pi$ trong bộ nhớ cache. Trên dữ liệu log thông thường, chi phí quản trị trạng thái này lớn hơn lợi ích bước nhảy mà KMP mang lại.
+* **Ý nghĩa của việc đo mốc tham chiếu `lib-read`:**
+  * Thuật toán `lib-read` chỉ đọc file tuần tự từng block $1\text{ MiB}$ vào mảng byte rồi bỏ qua mà không xử lý tìm kiếm.
+  * Tốc độ của `lib-read` đại diện cho **trần băng thông I/O vật lý của phần cứng / OS cache**.
+  * Khi nhóm chứng minh Throughput của Brute Force hay KMP đạt xấp xỉ Throughput của `lib-read`, nhóm có luận điểm khoa học vững chắc trong Paper: *Thuật toán đã tối ưu hóa tiệm cận giới hạn phần cứng, nút thắt cổ chai (bottleneck) nằm ở I/O đĩa chứ không nằm ở thuật toán*.
+* **Trọng tâm vấn đáp cá nhân D14:**
+  * Vẽ từng bước dịch chuyển con trỏ của Brute Force trên chuỗi ngắn (10–15 ký tự).
+  * Giải thích cơ chế đệm $m - 1$ byte cuối của block trước nối vào đầu block sau để không bỏ sót mẫu vắt qua 2 block $1\text{ MiB}$.
+  * Thao tác sửa code trong 2 phút: Thay đổi công thức tính biến kiểm tra tích lũy `check = (start_pos + 1) * 1000003L + pattern_id` và chạy test chứng minh.
+
+---
+
+### 2. CẶP 2: BẢN CHẤT KỸ THUẬT RQ2, BƯỚC NHẢY BẢNG TIỀN TỐ $\pi$ & DỮ LIỆU BẤT LỢI $T_4$
+
+* **Câu hỏi cốt lõi của RQ2:** Kích thước bảng chữ cái $\sigma$, độ dài mẫu $m$ và dữ liệu bất lợi ảnh hưởng thế nào đến hai thuật toán? Điều kiện nào khiến KMP vượt trội hoàn toàn so với Brute Force?
+* **Thí nghiệm A - Ảnh hưởng của kích thước bảng chữ cái $\sigma$ ($\sigma \in \{2, 4, 26, 256\}$):**
+  * Khi $\sigma$ lớn ($\sigma = 26$ chữ cái tiếng Anh, $\sigma = 256$ toàn bộ byte): Xác suất trùng tiền tố rất thấp $\to$ Brute Force rất nhanh.
+  * Khi $\sigma$ thu hẹp cực nhỏ ($\sigma = 2$ như hệ nhị phân, chuỗi bit hoặc DNA): Xác suất các ký tự trùng lặp nhau tăng vọt. Mẫu và văn bản liên tục khớp được một đoạn dài rồi mới sai $\to$ Brute Force phải quay lui liên tục, số phép so sánh byte chia cho số byte văn bản (`--count`) tăng cao. Lúc này bảng $\pi$ của KMP phát huy sức mạnh tối đa, giúp KMP nhảy cóc mà không quay lui $\to$ **KMP chiến thắng rõ rệt tại $\sigma = 2$**.
+* **Thí nghiệm B - Dữ liệu bất lợi đối kháng ($T_4$ Worst-Case):**
+  * Văn bản $T_4$: Toàn bộ là ký tự `'a'` (ví dụ $256\text{ MiB}$ ký tự `'a'`).
+  * Mẫu tìm kiếm: Gồm $m - 1$ ký tự `'a'` và kết thúc bằng một ký tự `'b'` (ví dụ: `"aaaa...aab"`).
+  * *Hành vi của Brute Force:* Tại mỗi vị trí $i$, nó phải so khớp đúng $m - 1$ ký tự `'a'`, đến ký tự cuối cùng mới gặp `'b'` (sai khớp), sau đó nó chỉ dịch sang phải đúng 1 vị trí và lặp lại việc so khớp $m - 1$ ký tự. Độ phức tạp bị thoái hóa đúng về trường hợp xấu nhất: $O(n \times m)$. Khi $m = 1024$, thời gian chạy tăng vọt hàng trăm lần.
+  * *Hành vi của KMP:* Nhờ bảng $\pi$ chỉ ra rằng tiền tố `'a'...'a'` trùng nhau, KMP không quay lui con trỏ mà chỉ cập nhật lại trạng thái, giữ vững thời gian chạy tuyến tính $O(n)$.
+* **Trọng tâm vấn đáp cá nhân D14:**
+  * Tự tay tính và vẽ mảng tiền tố (bảng $\pi$) trên giấy nháp cho một chuỗi cụ thể (ví dụ: `"ababac"` hoặc `"ababcabab"`) trong 1 phút.
+  * Giải thích bản chất biến trạng thái $j$ (số ký tự khớp) được duy trì liên tục qua ranh giới các block $B$ như thế nào để không bị reset về 0.
+  * Thao tác sửa code trong 2 phút: Sửa điều kiện cập nhật $j$ hoặc mảng trạng thái `int[] state` của $k$-KMP.
+
+---
+
+### 3. CẶP 3: BẢN CHẤT KỸ THUẬT RQ3, SỰ ĐÁNH ĐỔI BỘ NHỚ CỦA DFA VS TRIE VÀ VAI TRÒ CHỦ BIÊN PAPER
+
+* **Câu hỏi cốt lõi của RQ3:** Khi tìm đồng thời $k$ mẫu ($k \in \{1, 10, 100, 1000\}$), Aho-Corasick vượt trội $k$-KMP ra sao? Hai biến thể của Aho-Corasick (`fail` và `dfa`) đánh đổi giữa tốc độ và bộ nhớ như thế nào?
+* **So sánh $k$-KMP với Aho-Corasick:**
+  * $k$-KMP: Quét file đúng 1 lượt, nhưng tại mỗi byte đọc được, chương trình phải dùng vòng lặp `for` duyệt qua cả $k$ trạng thái KMP độc lập. Do đó, thời gian quét tỷ lệ thuận tuyến tính với $k$ ($O(n \times k)$). Khi $k = 1.000$, tốc độ quét chậm đi gần 1.000 lần.
+  * Aho-Corasick: Gom toàn bộ $k$ mẫu vào một cây Trie / Otômat duy nhất. Thời gian quét văn bản độc lập với $k$, đạt $O(n)$ cho toàn bộ tập mẫu $\to$ Khi $k \ge 10$, Aho-Corasick nhanh hơn $k$-KMP rõ rệt; khi $k = 1.000$, Aho-Corasick bỏ xa $k$-KMP hoàn toàn.
+* **Thí nghiệm tắt/bật cơ chế: Đánh đổi giữa Biến thể `fail` và Biến thể `dfa`:**
+  * **Biến thể `fail` (Trie + BFS Failure Link + Dictionary Suffix Link):**
+    * *Bộ nhớ:* Rất tiết kiệm. Mỗi nút chỉ lưu các cạnh con thực tế tồn tại (dạng bảng băm hoặc mảng thưa).
+    * *Tốc độ:* Lúc quét văn bản, nếu gặp byte không có nhánh đi tiếp, thuật toán phải lặp qua các con trỏ `failure link` để tìm trạng thái lùi hợp lệ $\to$ số bước chuyển trạng thái trên mỗi byte có thể $> 1$.
+  * **Biến thể `dfa` (Ma trận chuyển trạng thái đầy đủ theo Algorithm 4 Aho-Corasick 1975):**
+    * *Tốc độ:* Cực nhanh và ổn định tuyệt đối. Tại mỗi byte đọc vào, thuật toán chỉ thực hiện đúng **1 phép tra mảng $O(1)$**: `currState = transitionTable[currState][b & 0xFF]`. Tuyệt đối không có vòng lặp nhảy failure link lúc quét.
+    * *Bộ nhớ phình to (Trade-off):* Bảng ma trận có kích thước `int[numStates][256]`. Khi số mẫu $k = 1.000$, số trạng thái lên đến hàng chục nghìn, bảng ma trận này chiếm dụng hàng chục/hàng trăm MB RAM, thời gian dựng tiền xử lý (`build_ms`) cũng lâu hơn.
+* **Trọng tâm biên tập Paper IEEE & Vấn đáp cá nhân D14:**
+  * Vẽ cây Trie cho tập từ ngắn `{"he", "she", "his", "hers"}` trên giấy nháp, chỉ rõ mũi tên nét đứt là `failure link` và mũi tên `output link` (Dictionary Suffix Link).
+  * Giải thích Bảng ánh xạ cơ chế: Chỉ ra chính xác thuật toán BFS, nút Trie, mảng DFA nằm ở file `.java` nào và hàm nào trong project của nhóm.
+  * Giải thích quy tắc lựa chọn thực tế trong phần Discussion: *Hệ thống nhúng ít RAM nên dùng biến thể `fail`; hệ thống máy chủ mạng băng thông cao như Snort/ripgrep cần tốc độ quét cực hạn $O(1)$ nên dùng biến thể `dfa`*.
+
+---
+
+### 🏆 BẢNG PHÂN BỔ ĐIỂM SỐ VÀ TIÊU CHÍ ĐÁNH GIÁ (THANG ĐIỂM 10)
+
+| Thành phần điểm | Trọng số | Tiêu chí chi tiết theo Quy định chung | Người chịu trách nhiệm chính |
+| :--- | :---: | :--- | :--- |
+| **1. Cài đặt & Tính đúng** | **1.5** | Thuật toán qua 100% test bắt buộc, test biên, test ngẫu nhiên Oracle | Toàn bộ 3 cặp (Cặp 2 dẫn đầu test) |
+| **2. Bộ đo & Tái lập** | **1.5** | CSV chuẩn 22 cột, có SHA-256/seed, chạy lại tại buổi bảo vệ khớp trong khoảng 0.5 – 2 lần median | Cặp 1 (Bộ đo Runner) & Cặp 3 (Plot script) |
+| **3. Kết quả & Lập luận** | **2.0** | Trả lời đầy đủ RQ1 (0.5), RQ2 (0.5), RQ3 kèm tắt cơ chế (0.5), Discussion sâu sắc (0.5) | Cặp 1 (RQ1), Cặp 2 (RQ2), Cặp 3 (RQ3 & Discussion) |
+| **4. Paper IEEE** | **1.0** | Đúng format 2 cột IEEE, đủ 7 mục, Abstract/Keywords chuẩn tiếng Anh, trích dẫn đúng 4 nguồn, khai báo AI | Cặp 3 (Bảo Trâm & Triều Vỹ) |
+| **5. Giải thích phần phụ trách** | **1.0** | Từng cá nhân giải thích đúng code, test và dữ liệu mình đứng tên trong file `PHAN_CONG.md` | Điểm cá nhân (Mỗi người 5 phút) |
+| **6. Truy vết thuật toán** | **1.0** | Truy vết đúng trên input nhỏ giảng viên đưa ra (Brute Force, bảng $\pi$, Trie/Fail link) | Điểm cá nhân (Mỗi người 5 phút) |
+| **7. Thay đổi nhỏ & Kiểm tra** | **1.0** | Sửa code đúng theo yêu cầu GV trong 2 phút trên NetBeans và chạy test chứng minh | Điểm cá nhân (Mỗi người 5 phút) |
+| **8. Diễn giải kết quả** | **1.0** | Nhìn biểu đồ/bảng số liệu giải thích hoặc dự đoán kết quả một cấu hình mới | Điểm cá nhân (Mỗi người 5 phút) |
+| **TỔNG CỘNG** | **10.0** | **Điểm sinh viên = Điểm nhóm (0 – 6) + Điểm cá nhân (0 – 4)** | Cả nhóm đồng lòng đạt điểm tuyệt đối |
+
+---

@@ -1,4 +1,5 @@
 package algorithm;
+
 import java.util.List;
 
      //Cần 1 khuôn mẫu chung cho các thuật toán tìm kiếm mẫu
@@ -17,7 +18,7 @@ import java.util.List;
 
 
       //Hàm định danh tên thuật toán, trả về tên chuẩn của thuật toán
-      //Dùng cho chỉ số algorith_name trong file csv và để cho phần tự động hóa cho BỘ ĐO CHỈ SỐ TRONG BENCHMARK
+      //Dùng cho chỉ số algorith_name trong filse csv và để cho phần tự động hóa cho BỘ ĐO CHỈ SỐ TRONG BENCHMARK
       public String getAlgorithmName();
 
       //Hàm làm mới trạng thái của thuật toán về lại trạng thái ban đầu, để có thể tái sử dụng thuật toán cho các lần Warm-up -> chính thức chạy.

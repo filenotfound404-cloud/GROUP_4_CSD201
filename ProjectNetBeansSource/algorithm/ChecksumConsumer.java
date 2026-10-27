@@ -15,7 +15,7 @@ public class ChecksumConsumer {
       public void onMatch(long offSet, int patternId) {
           //offset: Vị trí byte bắt đầu tìm thấy từ trong file log (từ 0 đến n-1).
           //patternId: Mã số thứ tự của từ vừa tìm thấy (ví dụ: tìm thấy từ thứ 0, từ thứ 1,... trong danh sách mẫu).
-          checksum = checksum + (offSet + 1) * 1000003L + patternId;
+          checksum = checksum + ( offSet + 1 ) * 1000003L + patternId;
           count++;
       }
 

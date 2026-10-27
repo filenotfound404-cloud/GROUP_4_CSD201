@@ -1,0 +1,10 @@
+<<<<<<< HEAD
+/kkmp-experiment/nbproject/private/
+/kkmp-experiment/build/
+=======
+*.class
+ProjectNetBeansSource/build/
+ProjectNetBeansSource/dist/
+ProjectNetBeansSource/out/
+ProjectNetBeansSource/nbproject/private/
+>>>>>>> f27a3cb9b66edc3078824f086addb2afacc197f2
