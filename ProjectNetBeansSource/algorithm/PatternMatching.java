@@ -1,6 +1,7 @@
-package algorithm;
 import java.util.List;
-
+import java.io.InputStream;
+import java.io.IOException;
+package algorithm;
      //Cần 1 khuôn mẫu chung cho các thuật toán tìm kiếm mẫu
      //Phục vụ cho việc đo lường công bằng, độ chính xác cao trên log lớn (16MB - 1GB)
      //Gồm 3 hàm chính và 1 hàm bổ trợ
@@ -17,7 +18,7 @@ import java.util.List;
 
 
       //Hàm định danh tên thuật toán, trả về tên chuẩn của thuật toán
-      //Dùng cho chỉ số algorith_name trong file csv và để cho phần tự động hóa cho BỘ ĐO CHỈ SỐ TRONG BENCHMARK
+      //Dùng cho chỉ số algorith_name trong filse csv và để cho phần tự động hóa cho BỘ ĐO CHỈ SỐ TRONG BENCHMARK
       public String getAlgorithmName();
 
       //Hàm làm mới trạng thái của thuật toán về lại trạng thái ban đầu, để có thể tái sử dụng thuật toán cho các lần Warm-up -> chính thức chạy.
