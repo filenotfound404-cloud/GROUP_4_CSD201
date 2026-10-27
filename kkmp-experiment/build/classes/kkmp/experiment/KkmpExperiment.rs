@@ -1,2 +1,0 @@
-kkmpexperiment.KKMPExperiment
-kkmpexperiment.KKMPExperiment$PatternState
