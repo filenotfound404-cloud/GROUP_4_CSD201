@@ -1,0 +1,5 @@
+*.class
+ProjectNetBeansSource/build/
+ProjectNetBeansSource/dist/
+ProjectNetBeansSource/out/
+ProjectNetBeansSource/nbproject/private/

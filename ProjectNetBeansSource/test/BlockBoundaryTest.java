@@ -1,6 +1,6 @@
 package test;
 
-import algorithm.BruteForceMatcher;
+import algorithm.bruteforce.BruteForceMatcher;
 import algorithm.ChecksumConsumer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;

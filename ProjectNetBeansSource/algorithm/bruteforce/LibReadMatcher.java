@@ -1,5 +1,7 @@
-package algorithm;
+package algorithm.bruteforce;
 
+import algorithm.PatternMatching;
+import algorithm.ChecksumConsumer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
