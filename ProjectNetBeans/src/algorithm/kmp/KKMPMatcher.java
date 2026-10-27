@@ -78,7 +78,7 @@ public class KKMPMatcher implements PatternMatching {
                 if (state.matched == m) {
                     long matchOffset = (globalOffset + i) - m + 1;
                     if (consumer != null) {
-                        consumer.onMatch(state.id, matchOffset);
+                        consumer.onMatch(matchOffset, state.id);
                     }
                     state.matched = state.pi[m - 1];
                 }

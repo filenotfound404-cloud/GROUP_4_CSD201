@@ -77,7 +77,7 @@ public class KMPMatcher implements PatternMatching {
             if (matched == m) {
                 long matchOffset = (globalOffset + i) - m + 1;
                 if (consumer != null) {
-                    consumer.onMatch(0, matchOffset);
+                    consumer.onMatch(matchOffset, 0);
                 }
                 matched = pi[m - 1];
             }
