@@ -14,17 +14,16 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+import org.junit.Test;
 
 /** Deterministic randomized comparison of all matchers against String.indexOf. */
-public final class RandomOracleTest {
+public class RandomOracleTest {
     private static final int CASE_COUNT = 104;
     private static final int[] BLOCK_SIZES = {1, 2, 3, 7, 16};
 
-    private RandomOracleTest() { }
-
-    public static void main(String[] args) {
+    @Test
+    public void testAlgorithmsAgainstRandomOracle() {
         Random random = new Random(20261027L);
-        int assertions = 0;
         for (int caseNo = 1; caseNo <= CASE_COUNT; caseNo++) {
             byte[] text = randomBytes(random, random.nextInt(201));
             byte[] pattern = randomBytes(random, 1 + random.nextInt(8));
@@ -40,11 +39,8 @@ public final class RandomOracleTest {
                         runAcFail(text, pattern, blockSize));
                 assertMatches(caseNo, blockSize, "Aho-Corasick DFA", expected,
                         runAcDfa(text, pattern, blockSize));
-                assertions++;
             }
         }
-        System.out.println("RandomOracleTest: PASS (" + CASE_COUNT + " cases, "
-                + BLOCK_SIZES.length + " block sizes; all algorithms matched ISO-8859-1 oracle)");
     }
 
     private static byte[] randomBytes(Random random, int length) {
