@@ -13,25 +13,35 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import org.junit.Test;
 
 /** Fixed correctness cases required for the pattern-matching project. */
-public final class FixedCasesTest {
+public class FixedCasesTest {
     private static final int[] BLOCK_SIZES = {1, 2, 3, 7};
-    private static int checks;
 
-    private FixedCasesTest() { }
-
-    public static void main(String[] args) {
+    @Test
+    public void testSinglePatternFixedCases() {
         runSingleCase("TC01", "aaaaa", new String[] {"aaa"},
                 matches(0, 0, 0, 1, 0, 2));
         runSingleCase("TC02", "abababab", new String[] {"abab"},
                 matches(0, 0, 0, 2, 0, 4));
         runSingleCase("TC03", "abc", new String[] {"abcd"},
                 Collections.<Match>emptyList());
+    }
+
+    @Test
+    public void testEmptyPatternRejected() {
         runEmptyPatternCase();
+    }
+
+    @Test
+    public void testMultiPatternUshersCase() {
         runMultiPatternCase();
+    }
+
+    @Test
+    public void testAdversarialT4Case() {
         runT4Case();
-        System.out.println("FixedCasesTest: PASS (" + checks + " assertions)");
     }
 
     private static void runSingleCase(String id, String text, String[] patternStrings,
@@ -156,7 +166,6 @@ public final class FixedCasesTest {
 
     private static void verify(String id, String algorithm, List<Match> expected,
             List<Match> actual) {
-        checks++;
         if (!expected.equals(actual)) {
             throw new AssertionError(id + " / " + algorithm + ": expected " + expected
                     + ", got " + actual);
@@ -164,7 +173,6 @@ public final class FixedCasesTest {
     }
 
     private static void expectIllegalArgument(String id, Runnable action) {
-        checks++;
         try {
             action.run();
             throw new AssertionError(id + ": expected IllegalArgumentException");
