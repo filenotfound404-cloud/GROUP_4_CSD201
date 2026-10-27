@@ -1,0 +1,34 @@
+{
+  "rq": "RQ1",
+  "title": "So sánh Brute Force và KMP khi kích thước văn bản tăng",
+  "dataset": "T1",
+  "description": "Log mô phỏng định dạng timestamp LEVEL [component] message, lỗi Zipf s=1",
+  "scales_mib": [16, 64, 256, 512, 1024],
+  "pattern_length_bytes": 16,
+  "seeds": [42, 101, 2024],
+  "repeats": 3,
+  "block_size_bytes": 1048576,
+  "algorithms": [
+    {
+      "name": "bf",
+      "variant": "base",
+      "description": "Brute Force đọc block 1 MiB, giữ m-1 byte biên"
+    },
+    {
+      "name": "kmp",
+      "variant": "base",
+      "description": "KMP bảng tiền tố pi, duy trì trạng thái j qua ranh giới block"
+    },
+    {
+      "name": "lib-read",
+      "variant": "base",
+      "description": "Mốc đo nền chỉ đọc I/O không so khớp (baseline)"
+    }
+  ],
+  "metrics": [
+    "elapsed_ms",
+    "throughput_mib_s",
+    "ops_count_per_byte"
+  ],
+  "timeout_seconds": 60
+}
