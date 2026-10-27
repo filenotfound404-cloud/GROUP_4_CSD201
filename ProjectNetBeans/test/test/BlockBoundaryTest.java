@@ -19,16 +19,16 @@ public class BlockBoundaryTest {
 
     public static void main(String[] args) {
         System.out.println("========================================================================");
-        System.out.println("       KIỂM THỬ RANH GIỚI BLOCK (BlockBoundaryTest) - CẶP 1");
+        System.out.println("       KIEM THU RANH GIOI BLOCK (BlockBoundaryTest) - CAP 1");
         System.out.println("========================================================================");
 
         boolean ok1 = testFixedBoundary();
         boolean ok2 = testRandomBoundary();
 
         if (ok1 && ok2) {
-            System.out.println("\n==> TỔNG KẾT: 100% CÁC TEST RANH GIỚI BLOCK ĐÃ ĐẠT (PASS)!");
+            System.out.println("\n==> TONG KET: 100% CAC TEST RANH GIOI BLOCK DA DAT (PASS)!");
         } else {
-            System.err.println("\n==> TỔNG KẾT: CÓ TEST THẤT BẠI (FAIL)!");
+            System.err.println("\n==> TONG KET: CO TEST THAT BAI (FAIL)!");
             System.exit(1);
         }
     }
@@ -37,7 +37,7 @@ public class BlockBoundaryTest {
      * Test trên chuỗi cố định chứa các mẫu nằm vắt qua các vị trí block 1, 2, 3, 7 byte.
      */
     private static boolean testFixedBoundary() {
-        System.out.println("\n[1] Kiểm thử ranh giới block trên chuỗi cố định:");
+        System.out.println("\n[1] Kiem thu ranh gioi block tren chuoi co dinh:");
         byte[] text = "2026-10-27 ERROR [component_12] Database connection failure pool timeout ushers"
                 .getBytes(StandardCharsets.ISO_8859_1);
 
@@ -56,7 +56,7 @@ public class BlockBoundaryTest {
         long expCount = baseConsumer.getCount();
         long expCheck = baseConsumer.getChecksum();
 
-        System.out.printf("  Mốc chuẩn Baseline (B = 1 MiB): count = %d, checksum = %d%n", expCount, expCheck);
+        System.out.printf("  Moc chuan Baseline (B = 1 MiB): count = %d, checksum = %d%n", expCount, expCheck);
 
         int[] tinyBlocks = {1, 2, 3, 7};
         boolean allPass = true;
@@ -69,7 +69,7 @@ public class BlockBoundaryTest {
 
             boolean match = (c.getCount() == expCount && c.getChecksum() == expCheck);
             if (match) {
-                System.out.printf("  [PASS] Block B = %d bytes -> count: %d, checksum: %d (Khớp 100%%)%n",
+                System.out.printf("  [PASS] Block B = %d bytes -> count: %d, checksum: %d (Khop 100%%)%n",
                         b, c.getCount(), c.getChecksum());
             } else {
                 System.err.printf("  [FAIL] Block B = %d bytes -> count: %d (exp %d), checksum: %d (exp %d)%n",
@@ -84,7 +84,7 @@ public class BlockBoundaryTest {
      * Test ngẫu nhiên 100 chuỗi với nhiều kích thước block khác nhau.
      */
     private static boolean testRandomBoundary() {
-        System.out.println("\n[2] Kiểm thử ranh giới block trên 100 ca ngẫu nhiên:");
+        System.out.println("\n[2] Kiem thu ranh gioi block tren 100 ca ngau nhien:");
         Random rng = new Random(2026);
         boolean allPass = true;
 
@@ -116,14 +116,14 @@ public class BlockBoundaryTest {
 
             if (chunkConsumer.getCount() != baseConsumer.getCount() ||
                 chunkConsumer.getChecksum() != baseConsumer.getChecksum()) {
-                System.err.printf("  [FAIL] Ca ngẫu nhiên #%d với B = %d: Lệch kết quả!%n", t, b);
+                System.err.printf("  [FAIL] Ca ngau nhien #%d voi B = %d: Lech ket qua!%n", t, b);
                 allPass = false;
                 break;
             }
         }
 
         if (allPass) {
-            System.out.println("  [PASS] 100/100 ca ngẫu nhiên với block B in [1..9] bytes cho kết quả trùng khớp tuyệt đối!");
+            System.out.println("  [PASS] 100/100 ca ngau nhien voi block B in [1..9] bytes cho ket qua trung khop tuyet doi!");
         }
         return allPass;
     }

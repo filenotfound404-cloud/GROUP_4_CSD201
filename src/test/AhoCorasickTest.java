@@ -35,14 +35,14 @@ public class AhoCorasickTest {
         Result result = JUnitCore.runClasses(AhoCorasickTest.class);
 
         for (Failure failure : result.getFailures()) {
-            System.err.println("  [LỖI] " + failure.toString());
+            System.err.println("  [LOI] " + failure.toString());
         }
 
         if (result.wasSuccessful()) {
-            System.out.printf("%n>>> [100%% PASS] TẤT CẢ %d BÀI TEST JUNIT ĐÃ ĐẠT THÀNH CÔNG! (Thời gian: %.3fs) <<<%n",
+            System.out.printf("%n>>> [100%% PASS] TAT CA %d BAI TEST JUNIT DA DAT THANH CONG! (Thoi gian: %.3fs) <<<%n",
                     result.getRunCount(), result.getRunTime() / 1000.0);
         } else {
-            System.err.printf("%n>>> [FAIL] Có %d bài test thất bại! <<<%n", result.getFailureCount());
+            System.err.printf("%n>>> [FAIL] Co %d bai test that bai! <<<%n", result.getFailureCount());
             System.exit(1);
         }
     }

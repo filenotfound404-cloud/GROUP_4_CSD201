@@ -33,25 +33,25 @@ public class Main {
             return;
         }
 
-        // 3. Nếu truyền tham số không nhận diện được
-        System.err.println("Lỗi: Tham số không hợp lệ. Gõ '--help' để xem hướng dẫn.");
+        // 3. Neu truyen tham so khong nhan dien duoc
+        System.err.println("Loi: Tham so khong hop le. Go '--help' de xem huong dan.");
         printHelp();
     }
 
     private static void printHelp() {
         System.out.println("========================================================================");
-        System.out.println("       HƯỚNG DẪN DÒNG LỆNH (CLI) - NHÓM 4 ĐỒ ÁN CSD201 FA26");
+        System.out.println("       HUONG DAN DONG LENH (CLI) - NHOM 4 DO AN CSD201 FA26");
         System.out.println("========================================================================");
-        System.out.println("Cách dùng: java -Xmx2g -jar <ProjectJarFile>.jar [TÙY_CHỌN]\n");
-        System.out.println("Các tùy chọn chính:");
-        System.out.println("  --demo             Chạy kiểm thử nhanh bộ đo (1 MiB - 4 MiB, dưới 15 giây)");
-        System.out.println("  --benchmark        Chạy bộ đo tự động mặc định và xuất file CSV");
-        System.out.println("  --rq1              Chạy trọn bộ ma trận thực nghiệm cho RQ1 (Brute Force vs KMP)");
-        System.out.println("  --rq2              Chạy trọn bộ ma trận thực nghiệm cho RQ2 (Bảng chữ cái & T4)");
-        System.out.println("  --rq3              Chạy trọn bộ ma trận thực nghiệm cho RQ3 (Aho-Corasick vs k-KMP)");
-        System.out.println("  --measure <args>   Chạy lượt đo đơn lẻ trong JVM độc lập (do Runner gọi ngầm)");
-        System.out.println("  --help, -h         Hiển thị bảng hướng dẫn này\n");
-        System.out.println("Ví dụ:");
+        System.out.println("Cach dung: java -Xmx2g -jar <ProjectJarFile>.jar [TUY_CHON]\n");
+        System.out.println("Cac tuy chon chinh:");
+        System.out.println("  --demo             Chay kiem thu nhanh bo do (1 MiB - 4 MiB, duoi 15 giay)");
+        System.out.println("  --benchmark        Chay bo do tu dong mac dinh va xuat file CSV");
+        System.out.println("  --rq1              Chay tron bo ma tran thuc nghiem cho RQ1 (Brute Force vs KMP)");
+        System.out.println("  --rq2              Chay tron bo ma tran thuc nghiem cho RQ2 (Bang chu cai & T4)");
+        System.out.println("  --rq3              Chay tron bo ma tran thuc nghiem cho RQ3 (Aho-Corasick vs k-KMP)");
+        System.out.println("  --measure <args>   Chay luot do don le trong JVM doc lap (do Runner goi ngam)");
+        System.out.println("  --help, -h         Hien thi bang huong dan nay\n");
+        System.out.println("Vi du:");
         System.out.println("  java -Xmx2g -jar Group4_CSD201.jar --demo");
         System.out.println("  java -Xmx2g -jar Group4_CSD201.jar --rq1");
         System.out.println("========================================================================");

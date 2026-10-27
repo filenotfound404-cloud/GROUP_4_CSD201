@@ -11,6 +11,12 @@
         <group name="Practicals">
             <file>file:/D:/FPTuni/CSD201/PE_Exams/Unused/SU26/PE_03_notyet/1/Q1A/Given/src/Assignment.java</file>
         </group>
-        <group/>
+        <group>
+            <file>file:/D:/Github/GROUP_4_CSD201/ProjectNetBeans/test/test/RandomOracleTest.java</file>
+            <file>file:/D:/Github/GROUP_4_CSD201/ProjectNetBeans/test/test/FixedCasesTest.java</file>
+            <file>file:/D:/Github/GROUP_4_CSD201/ProjectNetBeans/test/algorithm/ProjectTestSuite.java</file>
+            <file>file:/D:/Github/GROUP_4_CSD201/ProjectNetBeans/test/test/BlockBoundaryTest.java</file>
+            <file>file:/D:/Github/GROUP_4_CSD201/ProjectNetBeans/test/test/AhoCorasickTest.java</file>
+        </group>
     </open-files>
 </project-private>
