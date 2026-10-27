@@ -22,7 +22,27 @@ import java.util.concurrent.TimeUnit;
  */
 public class BenchmarkRunner {
 
-    private static final String CSV_PATH = "results/raw/benchmark_results.csv";
+    private static final String CSV_PATH = resolveCsvPath();
+
+    /**
+     * Tự động dò tìm thư mục results/raw/ tại thư mục gốc repository (GROUP_4_CSD201 hoặc CSD201)
+     * Đảm bảo dù đứng ở bất kỳ thư mục con nào (ProjectNetBeans, dist,...) file CSV vẫn được ghi đúng chỗ.
+     */
+    private static String resolveCsvPath() {
+        File current = new File(".").getAbsoluteFile();
+        while (current != null) {
+            File resultsDir = new File(current, "results" + File.separator + "raw");
+            File gitDir = new File(current, ".git");
+            if (gitDir.exists() || resultsDir.exists()) {
+                if (!resultsDir.exists()) {
+                    resultsDir.mkdirs();
+                }
+                return new File(resultsDir, "benchmark_results.csv").getAbsolutePath();
+            }
+            current = current.getParentFile();
+        }
+        return "results" + File.separator + "raw" + File.separator + "benchmark_results.csv";
+    }
     private static final int TIMEOUT_SECONDS = 60;
     private static final String XMX = "2g"; // Dùng -Xmx2g theo quy định Mục 6.1
 
@@ -37,18 +57,18 @@ public class BenchmarkRunner {
         String gitCommit = resolveGitCommit();
 
         System.out.println("========================================================================");
-        System.out.println("           BỘ ĐO HIỆU NĂNG PATTERN MATCHING (FALL 2026)");
-        System.out.println(" Máy đo (machine_id): " + machineId);
+        System.out.println("           BO DO HIEU NANG PATTERN MATCHING (FALL 2026)");
+        System.out.println(" May do (machine_id): " + machineId);
         System.out.println(" Git Commit:          " + gitCommit);
-        System.out.println(" Cấu hình JVM:        -Xmx" + XMX);
-        System.out.println(" File kết quả CSV:    " + CSV_PATH);
+        System.out.println(" Cau hinh JVM:        -Xmx" + XMX);
+        System.out.println(" File ket qua CSV:    " + CSV_PATH);
         System.out.println("========================================================================");
 
         initCsvFile();
 
         // Xác định chế độ chạy từ dòng lệnh: --demo, --rq1, --rq2, --rq3, hoặc chạy mặc định
         List<BenchmarkConfig> suite = buildTestSuite(args);
-        System.out.printf(">> Tổng số lượt đo cần thực hiện: %d lượt%n%n", suite.size());
+        System.out.printf(">> Tong so luot do can thuc hien: %d luot%n%n", suite.size());
 
         int runCounter = 1;
         for (BenchmarkConfig cfg : suite) {
@@ -68,7 +88,7 @@ public class BenchmarkRunner {
         }
 
         System.out.println("\n========================================================================");
-        System.out.println(">>> ĐÃ HOÀN THÀNH TẤT CẢ LƯỢT ĐO! Dữ liệu đã lưu tại: " + CSV_PATH);
+        System.out.println(">>> DA HOAN THANH TAT CA LUOT DO! Du lieu da luu tai: " + CSV_PATH);
         System.out.println("========================================================================");
     }
 
@@ -196,7 +216,7 @@ public class BenchmarkRunner {
             try (PrintWriter pw = new PrintWriter(new FileWriter(file))) {
                 pw.println(CSV_HEADER);
             } catch (IOException e) {
-                System.err.println("Không thể tạo file CSV: " + e.getMessage());
+                System.err.println("Khong the tao file CSV: " + e.getMessage());
             }
         }
     }
@@ -207,7 +227,7 @@ public class BenchmarkRunner {
         try (PrintWriter pw = new PrintWriter(new FileWriter(CSV_PATH, true))) {
             pw.println(row);
         } catch (IOException e) {
-            System.err.println("Lỗi khi ghi dòng CSV: " + e.getMessage());
+            System.err.println("Loi khi ghi dong CSV: " + e.getMessage());
         }
     }
 

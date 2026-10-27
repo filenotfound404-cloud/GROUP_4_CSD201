@@ -1,0 +1,45 @@
+{
+  "rq": "RQ3",
+  "title": "Tìm k mẫu cùng lúc: Aho-Corasick (fail vs dfa) so với k-KMP",
+  "dataset": "T1",
+  "fixed_scale_mib": 256,
+  "heavy_scale_mib": 1024,
+  "block_size_bytes": 1048576,
+  "k_patterns": [1, 10, 100, 1000],
+  "pattern_length_range": [8, 32],
+  "pattern_composition": "50% mã lỗi/từ có trong log (theo seed), 50% chuỗi ngẫu nhiên không có trong log",
+  "repeats": 3,
+  "algorithms": [
+    {
+      "name": "kmp-k",
+      "variant": "base",
+      "description": "k-KMP: Quét file 1 lượt, duy trì song song k trạng thái KMP"
+    },
+    {
+      "name": "ac",
+      "variant": "fail",
+      "description": "Aho-Corasick Failure Link: Trie lưu cạnh thưa/HashMap, duyệt BFS failure link"
+    },
+    {
+      "name": "ac",
+      "variant": "dfa",
+      "description": "Aho-Corasick DFA: Bảng chuyển trạng thái đầy đủ int[states][256] (Algorithm 4 Aho-Corasick)"
+    },
+    {
+      "name": "lib-read",
+      "variant": "base",
+      "description": "Chi phí đọc file nền I/O"
+    }
+  ],
+  "mechanism_ablation": {
+    "description": "Thí nghiệm tắt cơ chế: Đo đánh đổi tốc độ quét (dfa nhanh hơn) vs bộ nhớ phụ (fail tiết kiệm RAM hơn)",
+    "comparison": "ac (fail) vs ac (dfa)"
+  },
+  "metrics": [
+    "build_ms",
+    "scan_elapsed_ms",
+    "heap_peak_bytes",
+    "automaton_states_count"
+  ],
+  "timeout_seconds": 60
+}

@@ -1,0 +1,29 @@
+{
+  "rq": "RQ2",
+  "title": "Ảnh hưởng của kích thước bảng chữ cái Sigma, độ dài mẫu m và độ lặp tiền tố",
+  "fixed_scale_mib": 256,
+  "block_size_bytes": 1048576,
+  "seeds": [42, 101, 2024],
+  "repeats": 3,
+  "experiment_a": {
+    "title": "Thí nghiệm A - Ảnh hưởng kích thước bảng chữ cái Sigma",
+    "dataset": "T3",
+    "description": "Chuỗi ngẫu nhiên trên Sigma ký hiệu đầu tiên",
+    "sigmas": [2, 4, 26, 256],
+    "pattern_length_bytes": 64,
+    "algorithms": ["bf", "kmp"]
+  },
+  "experiment_b": {
+    "title": "Thí nghiệm B - Ảnh hưởng độ dài mẫu m trên trường hợp bất lợi T4",
+    "dataset": "T4",
+    "description": "Toàn bộ là byte 'a', mẫu gồm m-1 byte 'a' và 1 byte 'b' cuối cùng",
+    "pattern_lengths_bytes": [8, 64, 1024],
+    "algorithms": ["bf", "kmp"]
+  },
+  "metrics": [
+    "elapsed_ms",
+    "ops_count",
+    "speedup_ratio_kmp_vs_bf"
+  ],
+  "timeout_seconds": 60
+}

@@ -8,28 +8,42 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import org.junit.Test;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
+import static org.junit.Assert.*;
 
 /**
- * Bộ kiểm thử tính đúng Aho-Corasick (AhoCorasickTest.java)
+ * Bộ kiểm thử tính đúng Aho-Corasick (AhoCorasickTest.java) bằng JUnit 4
  * 1. Test ca "ushers" với {"he", "she", "his", "hers"} thẩm định Dictionary Suffix Link (outputLink)
  * 2. Equivalence Test: ACFailMatcher vs ACDFAMatcher trên k in {1, 10, 20} mẫu ngẫu nhiên (100% khớp)
  * 3. Kiểm tra duy trì trạng thái Automaton qua ranh giới block cực nhỏ B in {1, 2, 3, 7} bytes
  */
 public class AhoCorasickTest {
 
+    /**
+     * Kích hoạt JUnit 4 Runner:
+     * Cho phép bấm "Run File" (Shift + F6) trực tiếp trong NetBeans
+     * mà vẫn thực thi 100% theo chuẩn JUnit Test Runner.
+     */
     public static void main(String[] args) {
         System.out.println("==================================================================");
-        System.out.println("     AHO-CORASICK CORRECTNESS TEST SUITE (AhoCorasickTest)");
+        System.out.println("     AHO-CORASICK JUNIT 4 TEST SUITE (AhoCorasickTest)");
         System.out.println("==================================================================\n");
 
-        boolean pass1 = testUshers();
-        boolean pass2 = testEquivalence();
-        boolean pass3 = testBlockBoundary();
+        Result result = JUnitCore.runClasses(AhoCorasickTest.class);
 
-        if (pass1 && pass2 && pass3) {
-            System.out.println("\n>>> [100% PASS] TẤT CẢ CÁC BÀI TEST TÍNH ĐÚNG AHO-CORASICK ĐÃ ĐẠT! <<<");
+        for (Failure failure : result.getFailures()) {
+            System.err.println("  [LOI] " + failure.toString());
+        }
+
+        if (result.wasSuccessful()) {
+            System.out.printf("%n>>> [100%% PASS] TAT CA %d BAI TEST JUNIT DA DAT THANH CONG! (Thoi gian: %.3fs) <<<%n",
+                    result.getRunCount(), result.getRunTime() / 1000.0);
         } else {
-            throw new AssertionError("Có bài test Aho-Corasick không đạt!");
+            System.err.printf("%n>>> [FAIL] Co %d bai test that bai! <<<%n", result.getFailureCount());
+            System.exit(1);
         }
     }
 
@@ -42,8 +56,8 @@ public class AhoCorasickTest {
      *   - "he" tại offset 2 (id 0) -> được tìm thấy qua Output Link khi đang ở trạng thái kết thúc "she"
      *   - "hers" tại offset 2 (id 3)
      */
-    public static boolean testUshers() {
-        System.out.println("--- [1] Test ca 'ushers' & Dictionary Suffix Link ---");
+    @Test
+    public void testUshers() {
         ACFailMatcher failMatcher = new ACFailMatcher();
         ACDFAMatcher dfaMatcher = new ACDFAMatcher();
 
@@ -64,37 +78,29 @@ public class AhoCorasickTest {
         RecordingConsumer cDfa = new RecordingConsumer();
         dfaMatcher.searchPattern(text, cDfa);
 
-        boolean failCheck = cFail.getCount() == 3 
-                && cFail.hasMatch(1, 1)  // she at 1
-                && cFail.hasMatch(2, 0)  // he at 2
-                && cFail.hasMatch(2, 3); // hers at 2
+        // Kiểm tra ACFailMatcher
+        assertEquals("ACFail: Tổng số match phải là 3", 3, cFail.getCount());
+        assertTrue("ACFail: Phải tìm thấy 'she' tại offset 1", cFail.hasMatch(1, 1));
+        assertTrue("ACFail: Phải tìm thấy 'he' tại offset 2 qua outputLink", cFail.hasMatch(2, 0));
+        assertTrue("ACFail: Phải tìm thấy 'hers' tại offset 2", cFail.hasMatch(2, 3));
 
-        boolean dfaCheck = cDfa.getCount() == 3
-                && cDfa.hasMatch(1, 1)
-                && cDfa.hasMatch(2, 0)
-                && cDfa.hasMatch(2, 3);
-
-        if (failCheck && dfaCheck) {
-            System.out.printf("  [PASS] Cả AC-Fail và AC-DFA đều tìm đúng: 'she' @ 1, 'he' @ 2, 'hers' @ 2 (count=%d)%n", cFail.getCount());
-            return true;
-        } else {
-            System.err.printf("  [FAIL] Ushers test: FailPass=%b, DfaPass=%b%n", failCheck, dfaCheck);
-            return false;
-        }
+        // Kiểm tra ACDFAMatcher
+        assertEquals("ACDFA: Tổng số match phải là 3", 3, cDfa.getCount());
+        assertTrue("ACDFA: Phải tìm thấy 'she' tại offset 1", cDfa.hasMatch(1, 1));
+        assertTrue("ACDFA: Phải tìm thấy 'he' tại offset 2 qua outputLink", cDfa.hasMatch(2, 0));
+        assertTrue("ACDFA: Phải tìm thấy 'hers' tại offset 2", cDfa.hasMatch(2, 3));
     }
 
     /**
      * Yêu cầu 2: Equivalence Test giữa 2 biến thể: Chạy đồng thời ACFailMatcher và ACDFAMatcher
      * trên tập k in {1, 10, 20} mẫu, đối chiếu count:check phải trùng khớp 100%.
      */
-    public static boolean testEquivalence() {
-        System.out.println("\n--- [2] Test tính tương đương (Equivalence Test: Fail vs DFA) ---");
+    @Test
+    public void testEquivalence() {
         int[] kValues = {1, 10, 20};
         Random rng = new Random(2026);
-        boolean allPassed = true;
 
         for (int k : kValues) {
-            System.out.printf("  Đang kiểm tra với k = %d mẫu ngẫu nhiên (chạy 50 ca/k)...%n", k);
             for (int run = 0; run < 50; run++) {
                 List<byte[]> patterns = new ArrayList<>();
                 for (int p = 0; p < k; p++) {
@@ -122,27 +128,20 @@ public class AhoCorasickTest {
                 ChecksumConsumer cDfa = new ChecksumConsumer();
                 dfaMatcher.searchPattern(text, cDfa);
 
-                if (cFail.getCount() != cDfa.getCount() || cFail.getChecksum() != cDfa.getChecksum()) {
-                    System.err.printf("  [FAIL] Mismatch tại k=%d: Fail(count=%d, check=%d) != DFA(count=%d, check=%d)%n",
-                            k, cFail.getCount(), cFail.getChecksum(), cDfa.getCount(), cDfa.getChecksum());
-                    allPassed = false;
-                    break;
-                }
+                assertEquals(String.format("Mismatch count tại k=%d, run=%d", k, run),
+                        cFail.getCount(), cDfa.getCount());
+                assertEquals(String.format("Mismatch checksum tại k=%d, run=%d", k, run),
+                        cFail.getChecksum(), cDfa.getChecksum());
             }
         }
-
-        if (allPassed) {
-            System.out.println("  [PASS] 100% các ca thử nghiệm k in {1, 10, 20} cho kết quả count:checksum trùng khớp tuyệt đối giữa Fail và DFA!");
-        }
-        return allPassed;
     }
 
     /**
      * Yêu cầu 3: Kiểm tra duy trì trạng thái Automaton không bị reset khi chuyển tiếp
      * qua ranh giới các block kích thước cực nhỏ B in {1, 2, 3, 7} bytes so với quét toàn bộ một lần.
      */
-    public static boolean testBlockBoundary() {
-        System.out.println("\n--- [3] Test duy trì trạng thái qua ranh giới block B in {1, 2, 3, 7} bytes ---");
+    @Test
+    public void testBlockBoundary() {
         int[] blockSizes = {1, 2, 3, 7};
         byte[] text = "2026-10-24 14:00:01 ERROR [Database] Connection timeout pool-1-thread-42 retry 3/5 ushers warning".getBytes(StandardCharsets.ISO_8859_1);
 
@@ -168,8 +167,6 @@ public class AhoCorasickTest {
 
         long expCount = baseFailConsumer.getCount();
         long expCheck = baseFailConsumer.getChecksum();
-
-        boolean allPassed = true;
 
         for (int B : blockSizes) {
             // Kiểm tra ACFailMatcher khi đọc từng block B byte
@@ -202,19 +199,16 @@ public class AhoCorasickTest {
                 offset += len;
             }
 
-            boolean failOk = cFail.getCount() == expCount && cFail.getChecksum() == expCheck;
-            boolean dfaOk = cDfa.getCount() == expCount && cDfa.getChecksum() == expCheck;
+            assertEquals(String.format("ACFail count không khớp baseline tại B=%d", B),
+                    expCount, cFail.getCount());
+            assertEquals(String.format("ACFail checksum không khớp baseline tại B=%d", B),
+                    expCheck, cFail.getChecksum());
 
-            if (failOk && dfaOk) {
-                System.out.printf("  [PASS] Block size B = %d bytes -> Khớp 100%% với Baseline (count=%d, check=%d)%n",
-                        B, expCount, expCheck);
-            } else {
-                System.err.printf("  [FAIL] Block size B = %d: Fail(count=%d, check=%d), DFA(count=%d, check=%d) != Expected(%d, %d)%n",
-                        B, cFail.getCount(), cFail.getChecksum(), cDfa.getCount(), cDfa.getChecksum(), expCount, expCheck);
-                allPassed = false;
-            }
+            assertEquals(String.format("ACDFA count không khớp baseline tại B=%d", B),
+                    expCount, cDfa.getCount());
+            assertEquals(String.format("ACDFA checksum không khớp baseline tại B=%d", B),
+                    expCheck, cDfa.getChecksum());
         }
-        return allPassed;
     }
 
     private static class RecordingConsumer extends ChecksumConsumer {
