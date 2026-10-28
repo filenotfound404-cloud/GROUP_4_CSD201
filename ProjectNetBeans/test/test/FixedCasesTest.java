@@ -19,6 +19,10 @@ import org.junit.Test;
 public class FixedCasesTest {
     private static final int[] BLOCK_SIZES = {1, 2, 3, 7};
 
+    public static void main(String[] args) {
+        org.junit.runner.JUnitCore.main(FixedCasesTest.class.getName());
+    }
+
     @Test
     public void testSinglePatternFixedCases() {
         runSingleCase("TC01", "aaaaa", new String[] {"aaa"},

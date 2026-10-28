@@ -2,6 +2,7 @@ package test;
 
 import algorithm.kmp.KMPMatcher;
 import java.util.Arrays;
+import org.junit.Test;
 
 /**
  * KMPTest - Bộ kiểm thử chuyên sâu thuật toán KMP (Nhiệm vụ Cặp 2 - Đầu việc 4.1).
@@ -19,15 +20,17 @@ public class KMPTest {
         System.out.println("            BỘ KIỂM THỬ CHUYÊN BIỆT KMP (ĐẦU VIỆC 4.1 PHÂN CÔNG)                ");
         System.out.println("================================================================================");
 
-        testPrefixTable();
-        testBlockStateContinuity();
+        KMPTest instance = new KMPTest();
+        instance.testPrefixTable();
+        instance.testBlockStateContinuity();
 
         System.out.println("\n================================================================================");
         System.out.printf("TỔNG KẾT KMP TEST: %d / %d ĐẠT\n", passed, total);
         System.out.println("================================================================================");
     }
 
-    private static void testPrefixTable() {
+    @Test
+    public void testPrefixTable() {
         System.out.println("\n--- 1. Kiểm thử Bảng Tiền tố pi ---");
         checkPi("ABCDEF (Không lặp)", "ABCDEF", new int[]{0, 0, 0, 0, 0, 0});
         checkPi("AAAAAA (Toàn ký tự giống)", "AAAAAA", new int[]{0, 1, 2, 3, 4, 5});
@@ -45,10 +48,12 @@ public class KMPTest {
             System.out.println("  [PASS] " + name + " -> " + Arrays.toString(actual));
         } else {
             System.err.println("  [FAIL] " + name + " -> Kỳ vọng " + Arrays.toString(expected) + " nhưng nhận " + Arrays.toString(actual));
+            org.junit.Assert.assertArrayEquals(expected, actual);
         }
     }
 
-    private static void testBlockStateContinuity() {
+    @Test
+    public void testBlockStateContinuity() {
         System.out.println("\n--- 2. Kiểm thử duy trì trạng thái j qua ranh giới block ---");
         total++;
         KMPMatcher matcher = new KMPMatcher();
@@ -64,6 +69,7 @@ public class KMPTest {
             System.out.println("  [PASS] Duy trì trạng thái qua ranh giới block: 'AB' + 'CD' tìm 'ABCD' (Count = 1)");
         } else {
             System.err.println("  [FAIL] Bị mất trạng thái qua block: count=" + consumer.getCount());
+            org.junit.Assert.assertEquals(1, consumer.getCount());
         }
     }
 }

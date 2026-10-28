@@ -21,6 +21,10 @@ public class RandomOracleTest {
     private static final int CASE_COUNT = 104;
     private static final int[] BLOCK_SIZES = {1, 2, 3, 7, 16};
 
+    public static void main(String[] args) {
+        org.junit.runner.JUnitCore.main(RandomOracleTest.class.getName());
+    }
+
     @Test
     public void testAlgorithmsAgainstRandomOracle() {
         Random random = new Random(20261027L);
