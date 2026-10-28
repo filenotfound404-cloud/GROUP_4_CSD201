@@ -5,13 +5,26 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
 /** Shared correctness tests that can be run against every project algorithm. */
 public final class ProjectTestSuite {
     private static final long MULTIPLIER = 1_000_003L;
     private static final List<TestCase> CASES = createCases();
 
-    private ProjectTestSuite() {
+    @Test
+    public void testAllProjectAlgorithms() {
+        Summary summary = runAll(
+            new algorithm.bruteforce.BruteForceMatcher(),
+            new algorithm.kmp.KMPMatcher(),
+            new algorithm.ahocorasick.ACFailMatcher(),
+            new algorithm.ahocorasick.ACDFAMatcher()
+        );
+        assertTrue("Tat ca thuat toan phai pass 100%", summary.allPassed());
+    }
+
+    public ProjectTestSuite() {
     }
 
     /** Run the same test cases against each supplied algorithm. */

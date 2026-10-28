@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
 /**
  * BlockBoundaryTest - Bộ kiểm thử ranh giới block.
@@ -16,6 +18,13 @@ import java.util.Random;
  * - Kết quả count và check phải trùng khớp 100%, không bị sót hoặc đếm trùng mẫu vắt qua block.
  */
 public class BlockBoundaryTest {
+
+    @Test
+    public void testBlockBoundary() {
+        boolean ok1 = testFixedBoundary();
+        boolean ok2 = testRandomBoundary();
+        assertTrue("100% cac test ranh gioi block phai DAT (PASS)!", ok1 && ok2);
+    }
 
     public static void main(String[] args) {
         System.out.println("========================================================================");
