@@ -1,3 +1,4 @@
+﻿sep=,
 run_id,rq,algorithm,variant,dataset,n,params,seed,input_sha256,generator_version,repeat,elapsed_ms,heap_before_bytes,heap_peak_bytes,ops_count,output_check,status,xmx,machine_id,git_commit,build_ms,throughput_mibs
 RUN_0001,TEST,bf,base,T1,1048576,block_size_bytes=1048576;pattern_length=16,42,c476920f3192bd9521e6e20a932a19cc57525b0a89562b81ad4811941298541f,v1.0,1,9.55,3003928,5101080,,count=1;check=76731230193,ok,2g,KHO,61cf377,0.01,104.72
 RUN_0002,TEST,kmp,base,T1,1048576,block_size_bytes=1048576;pattern_length=16,42,c476920f3192bd9521e6e20a932a19cc57525b0a89562b81ad4811941298541f,v1.0,1,6.92,3003896,3003896,,count=1;check=76731230193,ok,2g,KHO,61cf377,0.01,144.58
