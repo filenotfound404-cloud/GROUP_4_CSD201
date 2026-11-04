@@ -73,8 +73,8 @@ public class BenchmarkRunner {
         int runCounter = 1;
         for (BenchmarkConfig cfg : suite) {
             String runId = String.format("RUN_%04d", runCounter++);
-            System.out.printf("[%s] %s | %s (%s) | %s | n=%d | repeat=%d ... ",
-                runId, cfg.rq, cfg.algorithm, cfg.variant, cfg.dataset, cfg.n, cfg.repeat);
+            System.out.printf("[%s] %s | %s (%s) | %s | %s | seed=%d | repeat=%d ... ",
+                runId, cfg.rq, cfg.algorithm, cfg.variant, cfg.dataset, cfg.params, cfg.seed, cfg.repeat);
 
             long startTime = System.currentTimeMillis();
             String csvRow = executeSubprocess(runId, cfg, machineId, gitCommit);
