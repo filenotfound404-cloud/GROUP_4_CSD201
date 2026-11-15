@@ -117,7 +117,8 @@ public class MeasurementTask {
             long heapPeakBytes = heapBytes(true);
 
             // 7. Kiểm tra đúng với Oracle (Mục 5 & 6.7)
-            boolean isCorrect = verifyWithOracle(textData, patternList, consumer);
+            // lib-read chỉ đọc dữ liệu nền không tìm kiếm mẫu, không so sánh với oracle tìm kiếm
+            boolean isCorrect = "lib-read".equals(algorithm) || verifyWithOracle(textData, patternList, consumer);
             if (!isCorrect) {
                 status = "wrong";
             }
